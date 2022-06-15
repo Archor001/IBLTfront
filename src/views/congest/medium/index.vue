@@ -13,58 +13,63 @@
       </el-col>
     </el-row>
 
-    <!-- <div class="block">
-      <el-table
-        v-loading="listLoading"
-        :data="flowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        :stripe="stripe"
-        :current-page.sync="currentPage"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
-      >
-        <el-table-column align="center" label="ID">
-          <template slot-scope="scope">
-            {{ scope.$index }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="Source_IP" prop="srcIP">
-        </el-table-column>
-        <el-table-column align="center" label="Source_Port" prop="srcPort">
-        </el-table-column>
-        <el-table-column align="center" label="Destination_IP" prop="dstIP">
-        </el-table-column>
-        <el-table-column align="center" label="Destination_Port" prop="dstPort">
-        </el-table-column>
-        <el-table-column align="center" label="Count" prop="count">
-        </el-table-column>
-        <el-table-column align="center" prop="time" label="Time">
-          <template slot-scope="scope">
-            <i class="el-icon-time" />
-            <span>{{ scope.row.time }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div class="pagination">
-        <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :page-sizes="[10, 15, 20]"
-          :page-size="pagesize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
+    <div>
+      <div class="table-lable">
+        <label>流信息统计</label>
       </div>
-    </div> -->
+      <div class="table-wrapper">
+        <el-table
+          v-loading="listLoading"
+          :data="flowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :stripe="stripe"
+          :current-page.sync="currentPage"
+          element-loading-text="Loading"
+          fit
+          border
+          highlight-current-row
+        >
+          <el-table-column align="center" label="ID">
+            <template slot-scope="scope">
+              {{ scope.$index }}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="Source_IP" prop="srcIP">
+          </el-table-column>
+          <el-table-column align="center" label="Source_Port" prop="srcPort">
+          </el-table-column>
+          <el-table-column align="center" label="Destination_IP" prop="dstIP">
+          </el-table-column>
+          <el-table-column align="center" label="Destination_Port" prop="dstPort">
+          </el-table-column>
+          <el-table-column align="center" label="Count" prop="count" sortable>
+          </el-table-column>
+          <el-table-column align="center" prop="time" label="Time" sortable>
+            <template slot-scope="scope">
+              <i class="el-icon-time" />
+              <span>{{ scope.row.time }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="pagination" style="margin-top:32px">
+          <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10, 15, 20]"
+            :page-size="pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+          </el-pagination>
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
 
 <script>
-import { getList } from '@/api/table'
+import { getFlowList } from '@/api/table'
 
 export default {
   filters: {
@@ -79,7 +84,7 @@ export default {
   },
   data() {
     return {
-      flowlist: null,
+      flowlist: [],
       listLoading: true,
       stripe: true,
       tableData: [],
@@ -93,9 +98,6 @@ export default {
     this.initTimedeltaCharts()
     this.fetchData()
   },
-  created() {
-    this.fetchData()
-  },
   methods: {
     handleSizeChange(val) {
       this.pagesize = val
@@ -105,7 +107,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
+      getFlowList().then(response => {
         this.flowlist = response.data.items
         this.listLoading = false
       })
@@ -131,9 +133,9 @@ export default {
           x2: 0,
           y2: 1,
           colorStops: [{
-            offset: 0, color: 'red' // 0% 处的颜色
+            offset: 0, color: '#ff0b61' // 0% 处的颜色
           }, {
-            offset: 1, color: 'blue' // 100% 处的颜色
+            offset: 1, color: '#3e8bfa' // 100% 处的颜色
           }],
           global: false // 缺省为 false
         },
@@ -152,6 +154,12 @@ export default {
         },
         yAxis: {
           show: true,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#86878f'
+            }
+          },
           axisTick: {
             show: false
           }
@@ -207,9 +215,9 @@ export default {
           x2: 0,
           y2: 1,
           colorStops: [{
-            offset: 0, color: 'red' // 0% 处的颜色
+            offset: 0, color: '#ff0b61' // 0% 处的颜色
           }, {
-            offset: 1, color: 'blue' // 100% 处的颜色
+            offset: 1, color: '#3e8bfa' // 100% 处的颜色
           }],
           global: false // 缺省为 false
         },
@@ -224,6 +232,12 @@ export default {
         },
         yAxis: {
           show: true,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#86878f'
+            }
+          },
           axisTick: {
             show: false
           }
@@ -263,9 +277,19 @@ export default {
     margin-bottom: 32px;
   }
 
-  .block{
-    padding:0px;
+  .table-lable {
+    background: #fff;
+    padding: 21px 21px 0px;
+    font-size: 18px;
+    font-weight: bolder;
+    color: #474747;
   }
+
+  .table-wrapper {
+    padding: 32px;
+    background: #fff;
+  }
+
 }
 
 @media (max-width:1024px) {

@@ -59,20 +59,29 @@ export const constantRoutes = [
     path: '/congest',
     component: Layout,
     redirect: '/congest/medium',
-    name: 'Example',
+    name: 'Congest',
     meta: { title: '拥塞信息', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'medium',
         name: 'Medium',
-        component: () => import('@/views/medium/index'),
+        component: () => import('@/views/congest/medium/index'),
         meta: { title: '中拥塞', icon: 'table' }
       },
       {
         path: 'high',
         name: 'High',
-        component: () => import('@/views/high/index'),
-        meta: { title: '高拥塞', icon: 'tree' }
+        alwaysShow: true,
+        component: () => import('@/views/congest/high/index'),
+        meta: { title: '高拥塞', icon: 'tree' },
+        children: [
+          {
+            path: 'analyse',
+            name: 'Analyse',
+            component: () => import('@/views/congest/high/analyse'),
+            meta: { title: '数据分析', icon: 'link' }
+          }
+        ]
       }
     ]
   },
@@ -80,12 +89,21 @@ export const constantRoutes = [
   {
     path: '/system',
     component: Layout,
+    redirect: '/system/granularity',
+    name: 'System',
+    meta: { title: '系统资源开销', icon: 'form' },
     children: [
       {
-        path: 'utilization',
-        name: 'Utilization',
-        component: () => import('@/views/system/index'),
-        meta: { title: '系统资源开销', icon: 'form' }
+        path: 'granularity',
+        name: 'Granularity',
+        component: () => import('@/views/system/granularity'),
+        meta: { title: '细粒度', icon: 'user' }
+      },
+      {
+        path: 'light',
+        name: 'Light',
+        component: () => import('@/views/system/light'),
+        meta: { title: '轻量级', icon: 'user' }
       }
     ]
   },

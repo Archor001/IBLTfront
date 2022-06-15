@@ -12,12 +12,34 @@ const flowdata = Mock.mock({
   }]
 })
 
+const maxflowdata = Mock.mock({
+  'items|20': [{
+    hash: '@integer(0,65535)',
+    count: '@integer(0,1000)',
+    time: '@datetime'
+  }]
+})
+
 module.exports = [
   {
     url: '/vue-admin-template/table/flowlist',
     type: 'get',
     response: config => {
       const items = flowdata.items
+      return {
+        code: 20000,
+        data: {
+          total: items.length,
+          items: items
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-admin-template/table/maxflowlist',
+    type: 'get',
+    response: config => {
+      const items = maxflowdata.items
       return {
         code: 20000,
         data: {
