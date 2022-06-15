@@ -14,40 +14,6 @@
         </div>
       </el-col>
     </el-row>
-    <div>
-      <div class="table-lable">
-        <label>流信息统计</label>
-      </div>
-      <div class="table-wrapper">
-        <el-table
-          v-loading="listLoading"
-          :data="maxflowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-          :stripe="stripe"
-          :current-page.sync="currentPage"
-          element-loading-text="Loading"
-          fit
-          border
-          highlight-current-row
-        >
-          <el-table-column align="center" label="hash" prop="hash">
-          </el-table-column>
-          <el-table-column align="center" label="Count" prop="count" sortable>
-          </el-table-column>
-        </el-table>
-
-        <div class="pagination" style="margin-top:32px">
-          <el-pagination
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :page-sizes="[10, 15, 20]"
-            :page-size="pagesize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -67,18 +33,13 @@ export default {
   },
   data() {
     return {
+      hash: [],
+      count: [],
       maxflowlist: [],
-      listLoading: true,
-      stripe: true,
-      tableData: [],
-      currentPage: 1,
-      pagesize: 15,
-      total: 30
+      listLoading: true
     }
   },
   mounted() {
-    this.initBarCharts()
-    // this.initPieCharts()
     this.fetchData()
   },
   methods: {
@@ -87,12 +48,19 @@ export default {
       getMaxFlowList().then(response => {
         this.maxflowlist = response.data.items
         this.listLoading = false
+        this.initBarCharts(this.maxflowlist)
+        this.initPieCharts(this.maxflowlist)
       })
     },
     initBarCharts() {
+      this.hash = this.maxflowlist.map(item => {
+        return item.hash
+      })
+      this.count = this.maxflowlist.map(item => {
+        return item.count
+      })
+      // console.log(this.hash)
       var myBarChart = this.$echarts.init(document.getElementById('barchart'))
-      console.log(this.maxflowlist)
-      console.log('123')
       var option = {
         title: {
           text: 'Top-count流信息'
@@ -109,23 +77,64 @@ export default {
           data: ['count']
         },
         xAxis: {
-          data: this.maxflowlist.hash,
+          data: this.hash,
           axisTick: {
             show: false
           }
         },
-        yAxis: {},
+        yAxis: {
+          show: true,
+          axisLine: {
+            show: true
+          }
+        },
         series: [
           {
             name: 'count',
             type: 'bar',
-            data: [4336, 6854, 10, 2311, 2167, 8190, 8517],
+            data: this.count,
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }
         ]
       }
       myBarChart.setOption(option)
+    },
+    initPieCharts(arr) {
+      var myPieChart = this.$echarts.init(document.getElementById('piechart'))
+      var eva = this.maxflowlist[0].count/100
+      var option = {
+        title: {
+          text: '流量预警'
+        },
+        series: {
+          name: '最大流占阈值比',
+          type: 'gauge',
+          center: ['50%', '50%'],
+          radius: '80%',
+          min: 0,
+          max: 100,
+          splitNumber: 5,
+          axisLine: {
+            show: true,
+            LineStylee: {
+              width: 5,
+              color: [
+                [0.1, 'red'],
+                [0.2, 'green']
+              ]
+            }
+          },
+          detail: {
+            formatter: '{value}%'
+          },
+          data: [{
+            value: eva,
+            name: 'Percent'
+          }]
+        }
+      }
+      myPieChart.setOption(option)
     }
   }
 }
