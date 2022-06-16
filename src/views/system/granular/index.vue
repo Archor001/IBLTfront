@@ -1,22 +1,26 @@
 <template>
   <div class="dashboard-editor-container">
-  <el-row :gutter="32">
-    <el-col :span="12">
+    <el-row :gutter="32">
+      <el-col :span="24">
         <div class="chart-wrapper">
-          <div id="qdepth" style="height: 290px; width: 100%;"></div>
+          <div id="snmp" style="height: 290px; width: 100%;"></div>
         </div>
-    </el-col>
-    <el-col :span="12">
-        <div class="chart-wrapper">
-          <div id="timedelta" style="height: 290px; width: 100%;"></div>
-        </div>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 
 <script>
-import { getFlowList } from '@/api/table'
+import { getSNMP } from '@/api/table'
+
+// function sortByKey(array, key) {
+//   return array.sort(function(a, b) {
+//     var x = a[key]
+//     var y = b[key]
+//     return ((x < y) ? -1 : ((x < y) ? 1 : 0))
+//   })
+// }
 
 export default {
   filters: {
@@ -31,155 +35,115 @@ export default {
   },
   data() {
     return {
-      list: null,
-      listLoading: true
+      bandwithlist: [],
+      sorted_bandwithlist: [],
+      listLoading: true,
+      stripe: true,
+      tableData: [],
+      currentPage: 1,
+      pagesize: 10,
+      total: 30
     }
   },
   mounted() {
-    this.initQdepthCharts()
-    this.initTimedeltaCharts()
-  },
-  created() {
     this.fetchData()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pagesize = val
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+    },
     fetchData() {
       this.listLoading = true
-      getFlowList().then(response => {
-        this.list = response.data.items
+      getSNMP().then(response => {
+        this.bandwithlist = response.data.items
         this.listLoading = false
+        this.initSNMPCharts()
       })
     },
-    initQdepthCharts() {
-      var myChart = this.$echarts.init(document.getElementById('qdepth'))
+    initSNMPCharts() {
+      var myChart = this.$echarts.init(document.getElementById('snmp'))
+      const dataset = [[1, 101], [2, 114], [3, 132], [4, 108], [5, 105], [6, 111], [7, 109], [8, 102], [9, 114], [10, 120],
+        [11, 101], [12, 114], [13, 132], [14, 108], [15, 105], [16, 111], [17, 109], [18, 102], [19, 114], [20, 120],
+        [21, 101], [22, 114], [23, 132], [24, 108], [25, 105], [26, 111], [27, 109], [28, 102], [29, 114], [30, 120]]
       var option = {
-        backgroundColor: '#2c343c',
         title: {
-          text: '内存使用率',
-          left: 'center',
-          top: 20,
-          textStyle: {
-            color: '#ccc'
-          }
+          text: 'SNMP秒级粒度的带宽曲线'
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'axis',
+          show: true,
+          axisPointer: {
+            type: 'cross'
+          },
+          padding: [5, 10]
         },
-        visualMap: {
-          show: false,
-          min: 80,
-          max: 600,
-          inRange: {
-            colorLightness: [0, 1]
+        // color: {
+        //   type: 'linear',
+        //   x: 0,
+        //   y: 0,
+        //   x2: 0,
+        //   y2: 1,
+        //   colorStops: [{
+        //     offset: 0, color: '#ff0b61' // 0% 处的颜色
+        //   }, {
+        //     offset: 1, color: '#3e8bfa' // 100% 处的颜色
+        //   }],
+        //   global: false // 缺省为 false
+        // },
+        legend: {
+          data: ['snmp']
+        },
+        xAxis: {
+          type: 'value',
+          name: 'time(s)',
+          min: 0,
+          max: 30,
+          splitNumber: 6,
+          boundaryGap: false,
+          axisTick: {
+            show: false
+          }
+        },
+        grid: {
+          containLable: true
+        },
+        yAxis: {
+          name: 'Mbps',
+          show: true,
+          min: 0,
+          max: 300,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#86878f'
+            }
+          },
+          axisTick: {
+            show: false
           }
         },
         series: [
           {
-            name: 'Access From',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: [
-              { value: 535, name: 'Traditional' },
-              { value: 210, name: 'INT' }
-            ].sort(function(a, b) {
-              return a.value - b.value
-            }),
-            roseType: 'radius',
-            label: {
-              color: 'rgba(255, 255, 255, 0.3)'
+            name: 'snmp',
+            smooth: true,
+            lineStyle: {
+              width: 2
             },
-            labelLine: {
-              lineStyle: {
-                color: 'rgba(255, 255, 255, 0.3)'
-              },
-              smooth: 0.2,
-              length: 10,
-              length2: 20
+            areaStyle: {
+              color: '#f3f8ff'
             },
-            itemStyle: {
-              color: '#c23531',
-              shadowBlur: 200,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            },
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function(idx) {
-              return Math.random() * 200
-            }
-          }
-        ]
-      }
-      myChart.setOption(option)
-      // this.chart = myChart
-
-      // setTimeout(()=>{
-      //   myChart.setOption({
-      //     series: [
-      //       {
-      //         data: [3500, 5200, 4500, 6500, 200, 3000]
-      //       }
-      //     ]
-      //   })
-      // }, 1000)
-    },
-    initTimedeltaCharts() {
-      var myChart = this.$echarts.init(document.getElementById('timedelta'))
-      var option = {
-        backgroundColor: '#2c343c',
-        title: {
-          text: 'CPU使用率',
-          left: 'center',
-          top: 20,
-          textStyle: {
-            color: '#ccc'
-          }
-        },
-        tooltip: {
-          trigger: 'item'
-        },
-        visualMap: {
-          show: false,
-          min: 80,
-          max: 600,
-          inRange: {
-            colorLightness: [0, 1]
-          }
-        },
-        series: [
-          {
-            name: 'Access From',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
-            data: [
-              { value: 435, name: 'Traditional' },
-              { value: 310, name: 'INT' }
-            ].sort(function(a, b) {
-              return a.value - b.value
-            }),
-            roseType: 'radius',
-            label: {
-              color: 'rgba(255, 255, 255, 0.3)'
-            },
-            labelLine: {
-              lineStyle: {
-                color: 'rgba(255, 255, 255, 0.3)'
-              },
-              smooth: 0.2,
-              length: 10,
-              length2: 20
-            },
-            itemStyle: {
-              color: '#c23531',
-              shadowBlur: 200,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            },
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function(idx) {
-              return Math.random() * 200
-            }
+            type: 'line',
+            // data: this.bandwithlist.map(item => {
+            //   return {
+            //     value: [item.time, item.bandwith]
+            //   }
+            // }),
+            data: dataset,
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
           }
         ]
       }
@@ -197,9 +161,23 @@ export default {
 
   .chart-wrapper {
     background: #fff;
-    padding: 16px;
+    padding: 16px 16px 0px;
     margin-bottom: 32px;
   }
+
+  .table-lable {
+    background: #fff;
+    padding: 21px 21px 0px;
+    font-size: 18px;
+    font-weight: bolder;
+    color: #474747;
+  }
+
+  .table-wrapper {
+    padding: 32px;
+    background: #fff;
+  }
+
 }
 
 @media (max-width:1024px) {

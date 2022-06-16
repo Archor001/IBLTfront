@@ -15,3 +15,11 @@ export function getMaxFlowList(params) {
     params
   })
 }
+
+export function getSNMP(params) {
+  return request({
+    url: '/vue-admin-template/table/granular',
+    method: 'get',
+    params
+  })
+}

@@ -34,7 +34,6 @@ export default {
   data() {
     return {
       hash: [],
-      count: [],
       maxflowlist: [],
       listLoading: true
     }
@@ -48,18 +47,11 @@ export default {
       getMaxFlowList().then(response => {
         this.maxflowlist = response.data.items
         this.listLoading = false
-        this.initBarCharts(this.maxflowlist)
-        this.initPieCharts(this.maxflowlist)
+        this.initBarCharts()
+        this.initPieCharts()
       })
     },
     initBarCharts() {
-      this.hash = this.maxflowlist.map(item => {
-        return item.hash
-      })
-      this.count = this.maxflowlist.map(item => {
-        return item.count
-      })
-      // console.log(this.hash)
       var myBarChart = this.$echarts.init(document.getElementById('barchart'))
       var option = {
         title: {
@@ -69,15 +61,27 @@ export default {
           trigger: 'axis',
           show: true,
           axisPointer: {
-            type: 'cross'
+            type: 'shadow'
           },
-          padding: [5, 10]
+          padding: [5, 10],
+          // 提示框显示除了XY轴之外的流信息 如流IP流端口
+          formatter: (param) => {
+            var data = param[0].data
+            // console.log(param)
+            return 'hash: ' + data.value + '<br/>srcIP: ' + data.srcIP + '<br/>srcPort: ' + data.srcPort + '<br/>dstIP: ' + data.dstIP + '<br/>dstPort: ' + data.dstPort
+          }
         },
         legend: {
           data: ['count']
         },
         xAxis: {
-          data: this.hash,
+          // 横坐标是每条流的hash值
+          data: this.maxflowlist.map(item => {
+            return {
+              value: item.hash
+            }
+          }
+          ),
           axisTick: {
             show: false
           }
@@ -92,7 +96,13 @@ export default {
           {
             name: 'count',
             type: 'bar',
-            data: this.count,
+            // 取每条流的计数值作为value 其他属性为提示框服务
+            data: this.maxflowlist.map(item => {
+              return {
+                value: item.count,
+                ...item
+              }
+            }),
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }
@@ -100,9 +110,10 @@ export default {
       }
       myBarChart.setOption(option)
     },
-    initPieCharts(arr) {
+    initPieCharts() {
       var myPieChart = this.$echarts.init(document.getElementById('piechart'))
-      var eva = this.maxflowlist[0].count/100
+      // 取第一条流作为预警信息
+      var eva = this.maxflowlist[0].count / 100
       var option = {
         title: {
           text: '流量预警'

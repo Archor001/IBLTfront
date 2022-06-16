@@ -25,6 +25,13 @@ const maxflowdata = Mock.mock({
   }]
 })
 
+const granulardata = Mock.mock({
+  'items|100': [{
+    time: '@integer(0,60)',
+    bandwith: '@integer(100,150)'
+  }]
+})
+
 module.exports = [
   {
     url: '/vue-admin-template/table/flowlist',
@@ -45,6 +52,20 @@ module.exports = [
     type: 'get',
     response: config => {
       const items = maxflowdata.items
+      return {
+        code: 20000,
+        data: {
+          total: items.length,
+          items: items
+        }
+      }
+    }
+  },
+  {
+    url: '/vue-admin-template/table/granular',
+    type: 'get',
+    response: config => {
+      const items = granulardata.items
       return {
         code: 20000,
         data: {

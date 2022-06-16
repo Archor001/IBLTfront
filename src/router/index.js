@@ -76,6 +76,12 @@ export const constantRoutes = [
         meta: { title: '高拥塞', icon: 'tree' },
         children: [
           {
+            path: 'list',
+            name: 'List',
+            component: () => import('@/views/congest/high/list'),
+            meta: { title: '数据统计', icon: 'link' }
+          },
+          {
             path: 'analyse',
             name: 'Analyse',
             component: () => import('@/views/congest/high/analyse'),
@@ -104,12 +110,6 @@ export const constantRoutes = [
         name: 'Light',
         component: () => import('@/views/system/light'),
         meta: { title: '轻量级', icon: 'user' }
-      },
-      {
-        path: 'realtime',
-        name: 'Realtime',
-        component: () => import('@/views/system/realtime'),
-        meta: { title: '实时性', icon: 'user' }
       }
     ]
   },
