@@ -89,14 +89,14 @@ export const constantRoutes = [
   {
     path: '/system',
     component: Layout,
-    redirect: '/system/granularity',
+    redirect: '/system/granular',
     name: 'System',
     meta: { title: '系统资源开销', icon: 'form' },
     children: [
       {
-        path: 'granularity',
-        name: 'Granularity',
-        component: () => import('@/views/system/granularity'),
+        path: 'granular',
+        name: 'Granular',
+        component: () => import('@/views/system/granular'),
         meta: { title: '细粒度', icon: 'user' }
       },
       {
@@ -104,6 +104,12 @@ export const constantRoutes = [
         name: 'Light',
         component: () => import('@/views/system/light'),
         meta: { title: '轻量级', icon: 'user' }
+      },
+      {
+        path: 'realtime',
+        name: 'Realtime',
+        component: () => import('@/views/system/realtime'),
+        meta: { title: '实时性', icon: 'user' }
       }
     ]
   },

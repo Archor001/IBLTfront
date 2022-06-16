@@ -14,9 +14,14 @@ const flowdata = Mock.mock({
 
 const maxflowdata = Mock.mock({
   'items|20': [{
-    hash: '@integer(0,65535)',
-    count: '@integer(0,1000)',
-    time: '@datetime'
+    id: '@id',
+    srcIP: '@ip()',
+    srcPort: '@integer(100,60000)',
+    dstIP: '@ip()',
+    dstPort: '@integer(100,60000)',
+    count: '@integer(0,10000)',
+    time: '@datetime',
+    hash: '@integer(0,65535)'
   }]
 })
 
