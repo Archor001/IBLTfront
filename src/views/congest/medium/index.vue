@@ -17,6 +17,18 @@
       <div class="table-lable">
         <label>流信息统计</label>
       </div>
+      <div class="table-lable">
+        <SrcipOption v-model="srcip"/>
+        <SrcportOption v-model="srcport"/>
+        <DstipOption v-model="dstip"/>
+        <DstportOption v-model="dstport"/>
+        <el-button :loading="searchLoading" style="margin:0 0 20px 20px;" type="primary" @click="handleSearch">
+          搜索
+        </el-button>
+        <el-button :loading="searchLoading" style="margin:0 0 20px 20px;" type="primary" @click="fetchData">
+          展示所有
+        </el-button>
+      </div>
       <div class="table-wrapper">
         <el-table
           v-loading="listLoading"
@@ -69,9 +81,14 @@
 </template>
 
 <script>
-import { getFlowList } from '@/api/table'
+import { getMediumFlowList, getMediumSearch } from '@/api/table'
+import SrcipOption from './components/SrcipOption'
+import SrcportOption from './components/SrcportOption'
+import DstipOption from './components/DstipOption'
+import DstportOption from './components/DstportOption'
 
 export default {
+  components: { SrcipOption, SrcportOption, DstipOption, DstportOption },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -84,13 +101,21 @@ export default {
   },
   data() {
     return {
+      // 中拥塞流信息
       flowlist: [],
+      // 处理分页
       listLoading: true,
       stripe: true,
       tableData: [],
       currentPage: 1,
       pagesize: 10,
-      total: 30
+      total: 30,
+      // 搜索框
+      searchLoading: false,
+      srcip: '',
+      srcport: null,
+      dstip: '',
+      dstport: null
     }
   },
   mounted() {
@@ -107,9 +132,27 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getFlowList().then(response => {
+      getMediumFlowList().then(response => {
         this.flowlist = response.data.items
+        this.total = response.data.total
         this.listLoading = false
+      })
+    },
+    handleSearch() {
+      // 创建请求对象
+      var param = {
+        srcip: this.srcip,
+        srcport: this.srcport,
+        dstip: this.dstip,
+        dstport: this.dstport
+      }
+      // console.log(param)
+      this.searchLoading = true
+      getMediumSearch(param).then(response => {
+        this.flowlist = response.data.items
+        this.total = response.data.total
+        this.searchLoading = false
+        // console.log(response)
       })
     },
     initQdepthCharts() {
@@ -289,7 +332,6 @@ export default {
     padding: 32px;
     background: #fff;
   }
-
 }
 
 @media (max-width:1024px) {

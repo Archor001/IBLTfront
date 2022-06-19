@@ -115,29 +115,52 @@ export default {
       // 取第一条流作为预警信息
       var eva = this.maxflowlist[0].count / 100
       var option = {
-        title: {
-          text: '流量预警'
-        },
+        title: { text: '流量预警' },
         series: {
-          name: '最大流占阈值比',
           type: 'gauge',
-          center: ['50%', '50%'],
-          radius: '80%',
+          startAngle: 180,
+          endAngle: 0,
           min: 0,
           max: 100,
-          splitNumber: 5,
+          splitNumber: 8,
           axisLine: {
-            show: true,
-            LineStylee: {
-              width: 5,
+            // show: true,
+            lineStyle: {
+              width: 6,
               color: [
-                [0.1, 'red'],
-                [0.2, 'green']
+                [0.125, '#72ff04'],
+                [0.25, '#a3ff18'],
+                [0.375, '#d8ff29'],
+                [0.5, '#ecf02d'],
+                [0.625, '#f0dd29'],
+                [0.75, '#f6bd25'],
+                [0.875, '#fb731d'],
+                [1, '#fe3714']
               ]
             }
           },
+          pointer: {
+            icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+            length: '15%',
+            width: 20,
+            offsetCenter: [0, '-50%'],
+            itemStyle: {
+              color: 'auto'
+            }
+          },
+          title: {
+            offsetCenter: [0, '-20%'],
+            fontSize: 20
+          },
+          name: '最大流占阈值比',
+          center: ['50%', '65%'],
+          radius: '100%',
           detail: {
-            formatter: '{value}%'
+            fontSize: 20,
+            offsetCenter: [0, '0%'],
+            valueAnimation: true,
+            formatter: '{value}%',
+            color: 'auto'
           },
           data: [{
             value: eva,
