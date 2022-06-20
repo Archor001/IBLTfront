@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { getMediumFlowList, getMediumSearch } from '@/api/table'
+import { getMediumFlowList, getHighFlowList } from '@/api/table'
 import SrcipOption from './components/SrcipOption'
 import SrcportOption from './components/SrcportOption'
 import DstipOption from './components/DstipOption'
@@ -133,7 +133,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getMediumFlowList().then(response => {
+      getHighFlowList().then(response => {
         this.flowlist = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -149,7 +149,7 @@ export default {
       }
       // console.log(param)
       this.searchLoading = true
-      getMediumSearch(param).then(response => {
+      getHighFlowList(param).then(response => {
         this.flowlist = response.data.items
         this.total = response.data.total
         this.searchLoading = false

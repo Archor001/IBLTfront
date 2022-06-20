@@ -36,7 +36,16 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    // before: require('./mock/mock-server.js')
+    proxy: {
+      '/IBLT': {
+        target: 'http://218.199.84.19:8000',// 当前地址为接口地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/IBLT/': '/IBLT/'
+        }
+      }
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

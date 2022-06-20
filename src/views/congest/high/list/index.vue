@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { getHighFlowList, getHighSearch } from '@/api/table'
+import { getHighFlowList } from '@/api/table'
 import SrcipOption from './components/SrcipOption'
 import SrcportOption from './components/SrcportOption'
 import DstipOption from './components/DstipOption'
@@ -118,9 +118,12 @@ export default {
     fetchData() {
       this.listLoading = true
       getHighFlowList().then(response => {
+        // console.log(response)
         this.flowlist = response.data.items
         this.total = response.data.total
         this.listLoading = false
+      }).catch(err => {
+        console.log('high : ', err)
       })
     },
     handleSearch() {
@@ -133,7 +136,7 @@ export default {
       }
       // console.log(param)
       this.searchLoading = true
-      getHighSearch(param).then(response => {
+      getHighFlowList(param).then(response => {
         this.flowlist = response.data.items
         this.total = response.data.total
         this.searchLoading = false

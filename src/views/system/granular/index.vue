@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { getSNMP } from '@/api/table'
+import { getSNMP, getHighFlowList } from '@/api/table'
 
 // function sortByKey(array, key) {
 //   return array.sort(function(a, b) {
@@ -57,7 +57,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getSNMP().then(response => {
+      getHighFlowList().then(response => {
         this.bandwithlist = response.data.items
         this.listLoading = false
         this.initSNMPCharts()
