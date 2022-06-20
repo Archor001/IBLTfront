@@ -35,6 +35,7 @@
           :data="flowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           :stripe="stripe"
           :current-page.sync="currentPage"
+          :row-style="{height:'50px'}"
           element-loading-text="Loading"
           fit
           border

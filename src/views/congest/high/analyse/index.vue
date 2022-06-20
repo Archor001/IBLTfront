@@ -3,14 +3,14 @@
     <el-row :gutter="32">
       <el-col :span="24">
         <div class="chart-wrapper">
-          <div id="barchart" style="height: 290px; width: 100%;"></div>
+          <div id="barchart" style="height: 600px; width: 100%;"></div>
         </div>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="24">
         <div class="chart-wrapper">
-          <div id="piechart" style="height: 290px; width: 100%;"></div>
+          <div id="piechart" style="height: 400px; width: 100%;"></div>
         </div>
       </el-col>
     </el-row>
@@ -48,7 +48,7 @@ export default {
         this.maxflowlist = response.data.items
         this.listLoading = false
         this.initBarCharts()
-        this.initPieCharts()
+        this.initGaugeCharts()
       })
     },
     initBarCharts() {
@@ -57,6 +57,9 @@ export default {
         title: {
           text: 'Top-count流信息'
         },
+        // grid: {
+        //   height: 300
+        // },
         tooltip: {
           trigger: 'axis',
           show: true,
@@ -110,7 +113,7 @@ export default {
       }
       myBarChart.setOption(option)
     },
-    initPieCharts() {
+    initGaugeCharts() {
       var myPieChart = this.$echarts.init(document.getElementById('piechart'))
       // 取第一条流作为预警信息
       var eva = this.maxflowlist[0].count / 100
@@ -143,20 +146,20 @@ export default {
             icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
             length: '15%',
             width: 20,
-            offsetCenter: [0, '-50%'],
+            offsetCenter: [0, '-60%'],
             itemStyle: {
               color: 'auto'
             }
           },
           title: {
-            offsetCenter: [0, '-20%'],
-            fontSize: 20
+            offsetCenter: [0, '-15%'],
+            fontSize: 30
           },
           name: '最大流占阈值比',
-          center: ['50%', '65%'],
-          radius: '100%',
+          center: ['50%', '85%'],
+          radius: '150%',
           detail: {
-            fontSize: 20,
+            fontSize: 30,
             offsetCenter: [0, '0%'],
             valueAnimation: true,
             formatter: '{value}%',
@@ -164,7 +167,7 @@ export default {
           },
           data: [{
             value: eva,
-            name: 'Percent'
+            name: '最大流占阈值比'
           }]
         }
       }

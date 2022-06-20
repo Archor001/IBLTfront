@@ -22,6 +22,7 @@
           :data="flowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           :stripe="stripe"
           :current-page.sync="currentPage"
+          :row-style="{height:'50px'}"
           element-loading-text="Loading"
           fit
           border
@@ -94,7 +95,7 @@ export default {
       stripe: true,
       tableData: [],
       currentPage: 1,
-      pagesize: 10,
+      pagesize: 15,
       total: 0,
       // 搜索框
       searchLoading: false,

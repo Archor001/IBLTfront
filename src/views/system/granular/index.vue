@@ -3,7 +3,7 @@
     <el-row :gutter="32">
       <el-col :span="24">
         <div class="chart-wrapper">
-          <div id="snmp" style="height: 290px; width: 100%;"></div>
+          <div id="snmp" style="height: 400px; width: 100%;"></div>
         </div>
       </el-col>
     </el-row>
@@ -68,12 +68,12 @@ export default {
       const dataset1 = [[1, 101], [2, 114], [3, 132], [4, 108], [5, 105], [6, 111], [7, 109], [8, 102], [9, 114], [10, 120],
         [11, 101], [12, 114], [13, 132], [14, 108], [15, 105], [16, 111], [17, 109], [18, 102], [19, 114], [20, 120],
         [21, 101], [22, 114], [23, 132], [24, 108], [25, 105], [26, 111], [27, 109], [28, 102], [29, 114], [30, 120]]
-      const dataset2 = [[1, 50], [2, 56], [3, 79], [4, 108], [5, 128], [6, 181], [7, 260], [8, 80], [9, 221], [10, 134],
-        [11, 155], [12, 77], [13, 231], [14, 220], [15, 201], [16, 111], [17, 99], [18, 102], [19, 65], [20, 225],
-        [21, 132], [22, 114], [23, 132], [24, 67], [25, 250], [26, 78], [27, 90], [28, 95], [29, 114], [30, 120]]
+      // const dataset2 = [[1, 50], [2, 56], [3, 79], [4, 108], [5, 128], [6, 181], [7, 260], [8, 80], [9, 221], [10, 134],
+      //   [11, 155], [12, 77], [13, 231], [14, 220], [15, 201], [16, 111], [17, 99], [18, 102], [19, 65], [20, 225],
+      //   [21, 132], [22, 114], [23, 132], [24, 67], [25, 250], [26, 78], [27, 90], [28, 95], [29, 114], [30, 120]]
       var option = {
         title: {
-          text: 'SNMP秒级粒度与10ms粒度的带宽曲线'
+          text: 'SNMP秒级粒度'
         },
         tooltip: {
           trigger: 'axis',
@@ -147,26 +147,26 @@ export default {
             data: dataset1,
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
-          },
-          {
-            name: '10ms粒度',
-            smooth: true,
-            lineStyle: {
-              width: 2
-            },
-            areaStyle: {
-              color: '#f3f8ff'
-            },
-            type: 'line',
-            // data: this.bandwithlist.map(item => {
-            //   return {
-            //     value: [item.time, item.bandwith]
-            //   }
-            // }),
-            data: dataset2,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
           }
+          // {
+          //   name: '10ms粒度',
+          //   smooth: true,
+          //   lineStyle: {
+          //     width: 2
+          //   },
+          //   areaStyle: {
+          //     color: '#f3f8ff'
+          //   },
+          //   type: 'line',
+          //   // data: this.bandwithlist.map(item => {
+          //   //   return {
+          //   //     value: [item.time, item.bandwith]
+          //   //   }
+          //   // }),
+          //   data: dataset2,
+          //   animationDuration: 2800,
+          //   animationEasing: 'quadraticOut'
+          // }
         ]
       }
       myChart.setOption(option)
