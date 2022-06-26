@@ -27,6 +27,7 @@
           fit
           border
           highlight-current-row
+          @sort-change="sortChange"
         >
           <el-table-column align="center" label="ID">
             <template slot-scope="scope">
@@ -41,9 +42,9 @@
           </el-table-column>
           <el-table-column align="center" label="Destination_Port" prop="dstPort">
           </el-table-column>
-          <el-table-column align="center" label="Count" prop="count" sortable>
+          <el-table-column align="center" label="Count" prop="count" sortable='custom'>
           </el-table-column>
-          <el-table-column align="center" prop="time" label="Time" sortable>
+          <el-table-column align="center" prop="time" label="Time" sortable='custom'>
             <template slot-scope="scope">
               <i class="el-icon-time" />
               <span>{{ scope.row.time }}</span>
@@ -143,6 +144,14 @@ export default {
         this.searchLoading = false
         // console.log(response)
       })
+    },
+    sortChange(column){
+      this.currentPage = 1; // 排序后返回第一页
+      if (column.order === "descending") {
+        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop]);
+      } else if (column.order === "ascending") {
+        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop]);
+      }
     }
   }
 }
