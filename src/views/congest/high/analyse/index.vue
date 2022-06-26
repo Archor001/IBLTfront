@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { getMaxFlowList } from '@/api/table'
+import { getHighFlowList } from '@/api/table'
 
 export default {
   filters: {
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       hash: [],
+      limit: 20,
       maxflowlist: [],
       listLoading: true
     }
@@ -43,8 +44,12 @@ export default {
   },
   methods: {
     fetchData() {
+      var param = {
+        limit: this.limit,
+        count: '1'
+      }
       this.listLoading = true
-      getMaxFlowList().then(response => {
+      getHighFlowList(param).then(response => {
         this.maxflowlist = response.data.items
         this.listLoading = false
         this.initBarCharts()
@@ -57,9 +62,10 @@ export default {
         title: {
           text: 'Top-count流信息'
         },
-        // grid: {
-        //   height: 300
-        // },
+        grid: {
+          top: '15%',
+          right: '12.5%'
+        },
         tooltip: {
           trigger: 'axis',
           show: true,
@@ -71,17 +77,29 @@ export default {
           formatter: (param) => {
             var data = param[0].data
             // console.log(param)
-            return 'hash: ' + data.value + '<br/>srcIP: ' + data.srcIP + '<br/>srcPort: ' + data.srcPort + '<br/>dstIP: ' + data.dstIP + '<br/>dstPort: ' + data.dstPort
+            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param[0].color + '"></span>'
+            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Rank: ' + param[0].axisValue + '</span>' + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'srcIP: ' + '</span>' + ':' + (data.srcIP) + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'srcPort: ' + '</span>' + ':' + (data.srcPort) + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'dstIP: ' + '</span>' + ':' + (data.dstIP) + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'dstPort: ' + '</span>' + ':' + (data.dstPort) + '<br>'
           }
         },
         legend: {
           data: ['count']
         },
         xAxis: {
-          // 横坐标是每条流的hash值
+          // 横坐标是rank
+          name: 'rank',
+          nameGap: 25,
+          nameTextStyle: {
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+            fontSize: 15
+          },
           data: this.maxflowlist.map(item => {
             return {
-              value: item.hash
+              value: item.ID
             }
           }
           ),
@@ -90,6 +108,14 @@ export default {
           }
         },
         yAxis: {
+          splitNumber: 6,
+          name: '流大小',
+          nameGap: 25,
+          nameTextStyle: {
+            fontSize: 15,
+            fontStyle: 'italic',
+            fontWeight: 'bold'
+          },
           show: true,
           axisLine: {
             show: true
@@ -99,6 +125,10 @@ export default {
           {
             name: 'count',
             type: 'bar',
+            label: {
+              show: true,
+              position: 'top'
+            },
             // 取每条流的计数值作为value 其他属性为提示框服务
             data: this.maxflowlist.map(item => {
               return {
