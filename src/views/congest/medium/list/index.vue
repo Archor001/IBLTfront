@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-
+    <!-- this is card -->
     <!-- 队列深度 & 排队时延
     <el-row :gutter="32">
       <el-col :span="12">
