@@ -15,7 +15,7 @@
       </el-col>
     </el-row> -->
 
-    <!-- <div>
+    <div>
       <div class="table-lable">
         <label>流信息统计</label>
       </div>
@@ -34,7 +34,7 @@
       <div class="table-wrapper">
         <el-table
           v-loading="listLoading"
-          :data="flowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :data="flowlist[this.id].slice((currentPage-1)*pagesize,currentPage*pagesize)"
           :stripe="stripe"
           :current-page.sync="currentPage"
           :row-style="{height:'50px'}"
@@ -79,17 +79,7 @@
           </el-pagination>
         </div>
       </div>
-    </div> -->
-
-    <el-card>
-      <div slot="header">
-        <span>1970</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="show0">点击查看</el-button>
-      </div>
-      <div v-for="o in 4" :key="o">
-        {{ '列表内容 ' + o }}
-      </div>
-    </el-card>
+    </div>
 
     <!-- <div class="table-lable">
       <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show1">
@@ -118,8 +108,13 @@
 
 <script>
 import { getMediumFlowList } from '@/api/table'
+import SrcipOption from '../../components/SrcipOption'
+import SrcportOption from '../../components/SrcportOption'
+import DstipOption from '../../components/DstipOption'
+import DstportOption from '../../components/DstportOption'
 
 export default {
+  components: { SrcipOption, SrcportOption, DstipOption, DstportOption },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -133,7 +128,7 @@ export default {
   data() {
     return {
       // 中拥塞流信息
-      flowlist: [],
+      flowlist: [{}],
       // 处理分页
       listLoading: true,
       stripe: true,
@@ -161,7 +156,7 @@ export default {
   },
   methods: {
     show0() {
-      this.$router.push({ name: 'Page1', query: { id: '0' }})
+      this.$router.push({ name: 'Page', params: { id: '0' }})
     },
     handleSizeChange(val) {
       this.pagesize = val
@@ -182,7 +177,8 @@ export default {
       // },10)
       this.listLoading = true
       getMediumFlowList().then(response => {
-        this.flowlist = response.data.items
+        this.flowlist[this.id] = response.data.items
+        console.log(this.flowlist[this.id])
         this.total = response.data.total
         this.listLoading = false
       })
@@ -198,7 +194,7 @@ export default {
       // console.log(param)
       this.searchLoading = true
       getMediumFlowList(param).then(response => {
-        this.flowlist = response.data.items
+        this.flowlist[this.id] = response.data.items
         this.total = response.data.total
         this.searchLoading = false
         // console.log(response)
@@ -356,9 +352,9 @@ export default {
     sortChange(column) {
       this.currentPage = 1 // 排序后返回第一页
       if (column.order === 'descending') {
-        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop])
+        this.flowlist[this.id].sort((a, b) => b[column.prop] - a[column.prop])
       } else if (column.order === 'ascending') {
-        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop])
+        this.flowlist[this.id].sort((a, b) => a[column.prop] - b[column.prop])
       }
     }
   }
