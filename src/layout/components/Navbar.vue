@@ -87,6 +87,7 @@ export default {
     left: 40%;
     font-size:20px;
     line-height: 50px;
+    font-weight: bold;
   }
 
   .hamburger-container {

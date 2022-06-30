@@ -1,23 +1,29 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row :gutter="32">
-      <el-col :span="12">
+      <el-col>
         <div class="chart-wrapper">
-          <div id="bandwith" style="height: 290px; width: 100%;"></div>
-        </div>
-      </el-col>
-      <el-col :span="12">
-        <div class="chart-wrapper">
-          <div id="timedelay" style="height: 290px; width: 100%;"></div>
+          <div id="bandwith" style="height: 600px; width: 100%;"></div>
         </div>
       </el-col>
     </el-row>
-
+    <el-row :gutter="32">
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <div id="bar_one" style="height: 400px; width: 100%;"></div>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <div id="bar_two" style="height: 400px; width: 100%;"></div>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { getFlowList } from '@/api/table'
+import { getHighPackets, getMediumPackets } from '@/api/table'
 
 export default {
   filters: {
@@ -34,16 +40,11 @@ export default {
     return {
       flowlist: [],
       listLoading: true,
-      stripe: true,
-      tableData: [],
-      currentPage: 1,
-      pagesize: 10,
-      total: 30
+      packetNum: null
     }
   },
   mounted() {
     this.initBandwithCharts()
-    this.initTimedelayCharts()
     this.fetchData()
   },
   methods: {
@@ -55,113 +56,93 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getFlowList().then(response => {
-        this.flowlist = response.data.items
-        this.listLoading = false
+      getMediumPackets().then(response => {
+        this.packetNum = response.data.items[0].sum_count
+        getHighPackets().then(response => {
+          this.packetNum += response.data.items[0].sum_count
+          this.listLoading = false
+          this.initBandwithCharts()
+          this.initBarOneChart()
+          this.initBarTwoChart()
+        })
       })
     },
-    initBandwithCharts() {
-      var myChart = this.$echarts.init(document.getElementById('bandwith'))
+    initBarOneChart() {
+      var myChart = this.$echarts.init(document.getElementById('bar_one'))
       var option = {
         title: {
-          text: '镜像带宽开销对比图'
+          text: '镜像带宽开销'
         },
         tooltip: {
-          trigger: 'axis',
-          show: true,
-          axisPointer: {
-            type: 'shadow'
-          },
-          padding: [5, 10],
-          formatter: (params) => {
-            // console.log(param)
-            var dotColor1 = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[0].color + '"></span>'
-            var dotColor2 = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[1].color + '"></span>'
-            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + params[0].axisValue + '</span>' + '<br>' +
-                   dotColor1 + '<span style="color: #20253B">' + params[0].seriesName + '</span>' + '：' + (params[0].data) + '%' + '<br>' +
-                   dotColor2 + '<span style="color: #20253B">' + params[1].seriesName + '</span>' + '：' + (params[1].data) + '%'
-          }
+          trigger: 'item'
         },
         legend: {
-          data: ['INT/BurstRadar', 'IBLT']
-        },
-        xAxis: {
-          data: ['最差情况', '平均情况'],
-          // boundaryGap: false
-          axisTick: {
-            show: false
-          }
+          orient: 'horizontal',
+          bottom: '10%'
         },
         grid: {
           containLable: true
         },
-        yAxis: {
-          show: true,
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: '#86878f'
-            }
-          },
-          axisTick: {
-            show: false
-          }
-        },
         series: [
           {
-            name: 'INT/BurstRadar',
-            type: 'bar',
-            barGap: '10%',
-            barMaxWidth: '20%',
-            label: {
-              show: true,
-              position: 'top',
-              formatter: '{c}%'
-            },
+            center: ['50%', '45%'],
+            name: 'consume',
+            type: 'pie',
+            radius: '50%',
             itemStyle: {
-              color: '#0e1b3d'
+              color: '#5470c6'
             },
-            data: [100, 100],
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          },
-          {
-            name: 'IBLT',
-            type: 'bar',
-            barGap: '10%',
-            barMaxWidth: '20%',
-            label: {
-              show: true,
-              position: 'top',
-              formatter: '{c}%'
-            },
-            itemStyle: {
-              color: '#6a93c4'
-            },
-            data: [73.21, 16.38],
+            data: [
+              { value: 100, name: 'INT' }
+            ],
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }
         ]
       }
       myChart.setOption(option)
-      // this.chart = myChart
-
-      // setTimeout(()=>{
-      //   myChart.setOption({
-      //     series: [
-      //       {
-      //         data: [3500, 5200, 4500, 6500, 200, 3000]
-      //       }
-      //     ]
-      //   })
-      // }, 1000)
     },
-    initTimedelayCharts() {
-      var myChart = this.$echarts.init(document.getElementById('timedelay'))
+    initBarTwoChart() {
+      var myChart = this.$echarts.init(document.getElementById('bar_two'))
+      console.log(this.packetNum)
       var option = {
         title: {
-          text: 'IBLT信息获取时延对比图'
+          text: '镜像带宽开销占比'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{c}%'
+        },
+        legend: {
+          orient: 'horizontal',
+          bottom: '10%'
+        },
+        series: [
+          {
+            center: ['50%', '45%'],
+            name: 'ratio',
+            type: 'pie',
+            radius: '50%',
+            label: {
+              formatter: '{b}:{c}%'
+            },
+            data: [
+              // 1024*134/64/count
+              { value: 1024 * 134 * 100 / (64 * this.packetNum), name: 'Burst Monitor', itemStyle: { color: '#ed7d31' }},
+              { value: 100 - 1024 * 134 * 100 / (64 * this.packetNum), name: 'Background', itemStyle: { color: '#5470c6' }}
+            ],
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
+          }
+        ]
+      }
+      myChart.setOption(option)
+    },
+    initBandwithCharts() {
+      var myChart = this.$echarts.init(document.getElementById('bandwith'))
+      var option = {
+        title: {
+          text: '镜像数据包个数对比'
         },
         tooltip: {
           trigger: 'axis',
@@ -172,18 +153,16 @@ export default {
           padding: [5, 10],
           formatter: (params) => {
             // console.log(param)
-            var dotColor1 = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[0].color + '"></span>'
-            var dotColor2 = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[1].color + '"></span>'
+            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[0].color + '"></span>'
             return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + params[0].axisValue + '</span>' + '<br>' +
-                   dotColor1 + '<span style="color: #20253B">' + params[0].seriesName + '</span>' + '：' + (params[0].data) + '%' + '<br>' +
-                   dotColor2 + '<span style="color: #20253B">' + params[1].seriesName + '</span>' + '：' + (params[1].data) + '%'
+                   dotColor + '<span style="color: #20253B">' + params[0].seriesName + '</span>' + '：' + (params[0].data)
           }
         },
         legend: {
-          data: ['grpc', 'IBLT']
+          data: ['number_of_packets']
         },
         xAxis: {
-          data: ['中拥塞', '高拥塞'],
+          data: ['INT', 'Burst Monitor'],
           // boundaryGap: false
           axisTick: {
             show: false
@@ -206,36 +185,19 @@ export default {
         },
         series: [
           {
-            name: 'grpc',
+            name: 'number_of_packets',
             type: 'bar',
             barGap: '10%',
             barMaxWidth: '20%',
             label: {
               show: true,
               position: 'top',
-              formatter: '{c}%'
+              formatter: '{c}'
             },
             itemStyle: {
-              color: '#0e1b3d'
+              color: '#5470c6'
             },
-            data: [100, 100],
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          },
-          {
-            name: 'IBLT',
-            type: 'bar',
-            barGap: '10%',
-            barMaxWidth: '20%',
-            label: {
-              show: true,
-              position: 'top',
-              formatter: '{c}%'
-            },
-            itemStyle: {
-              color: '#6a93c4'
-            },
-            data: [2.5, 0.5],
+            data: [this.packetNum, 1024],
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }

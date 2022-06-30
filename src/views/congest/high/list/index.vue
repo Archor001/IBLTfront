@@ -72,10 +72,10 @@
 
 <script>
 import { getHighFlowList } from '@/api/table'
-import SrcipOption from './components/SrcipOption'
-import SrcportOption from './components/SrcportOption'
-import DstipOption from './components/DstipOption'
-import DstportOption from './components/DstportOption'
+import SrcipOption from '../../components/SrcipOption'
+import SrcportOption from '../../components/SrcportOption'
+import DstipOption from '../../components/DstipOption'
+import DstportOption from '../../components/DstportOption'
 
 export default {
   components: { SrcipOption, SrcportOption, DstipOption, DstportOption },
@@ -145,12 +145,12 @@ export default {
         // console.log(response)
       })
     },
-    sortChange(column){
-      this.currentPage = 1; // 排序后返回第一页
-      if (column.order === "descending") {
-        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop]);
-      } else if (column.order === "ascending") {
-        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop]);
+    sortChange(column) {
+      this.currentPage = 1 // 排序后返回第一页
+      if (column.order === 'descending') {
+        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop])
+      } else if (column.order === 'ascending') {
+        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop])
       }
     }
   }
