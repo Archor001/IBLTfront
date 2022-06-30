@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
-    <el-row :gutter="32">
+    <!-- <el-row :gutter="32">
       <el-col :span="12">
         <div class="chart-wrapper">
           <div id="qdepth" style="height: 290px; width: 100%;"></div>
@@ -11,7 +11,7 @@
           <div id="timedelta" style="height: 290px; width: 100%;"></div>
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
 
     <div>
       <div class="table-lable">
@@ -150,7 +150,7 @@ export default {
       }
       // console.log(param)
       this.searchLoading = true
-      getHighFlowList(param).then(response => {
+      getMediumFlowList(param).then(response => {
         this.flowlist = response.data.items
         this.total = response.data.total
         this.searchLoading = false
@@ -306,12 +306,12 @@ export default {
       }
       myChart.setOption(option)
     },
-    sortChange(column){
-      this.currentPage = 1; // 排序后返回第一页
-      if (column.order === "descending") {
-        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop]);
-      } else if (column.order === "ascending") {
-        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop]);
+    sortChange(column) {
+      this.currentPage = 1 // 排序后返回第一页
+      if (column.order === 'descending') {
+        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop])
+      } else if (column.order === 'ascending') {
+        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop])
       }
     }
   }
