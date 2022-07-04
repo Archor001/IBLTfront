@@ -4,7 +4,7 @@ import request from '@/utils/request'
 export function getMediumFlowList(params) {
   return request({
     url: '/IBLT/congest/medium',
-    method: 'post',
+    method: 'get',
     data: params
   })
 }
@@ -13,7 +13,7 @@ export function getMediumFlowList(params) {
 export function getHighFlowList(params) {
   return request({
     url: '/IBLT/congest/high/',
-    method: 'post',
+    method: 'get',
     data: params
   })
 }
@@ -36,6 +36,7 @@ export function getSNMP(params) {
   })
 }
 
+// 高拥塞数据包总数
 export function getHighPackets(params) {
   return request({
     url: '/IBLT/congest/high_sum',
@@ -44,6 +45,7 @@ export function getHighPackets(params) {
   })
 }
 
+// 中拥塞数据包总数
 export function getMediumPackets(params) {
   return request({
     url: '/IBLT/congest/medium_sum',

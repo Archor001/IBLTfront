@@ -34,7 +34,7 @@
       <div class="table-wrapper">
         <el-table
           v-loading="listLoading"
-          :data="flowlist[$route.query.id].slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :data="flowlist.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           :stripe="stripe"
           :current-page.sync="currentPage"
           :row-style="{height:'50px'}"
@@ -128,7 +128,7 @@ export default {
   data() {
     return {
       // 中拥塞流信息
-      flowlist: [{}],
+      flowlist: [],
       // 处理分页
       listLoading: true,
       stripe: true,
@@ -151,13 +151,21 @@ export default {
     }
   },
   mounted() {
-    // this.initQdepthCharts()
-    // this.initTimedeltaCharts()
-    this.id = this.$route.query.id
-    console.log(this.$route.query.id)
-    this.fetchData()
+    this.initialData()
+  },
+  watch: {
+    $route(to, from) {
+      this.initialData()
+    }
   },
   methods: {
+    initialData() {
+      // this.initQdepthCharts()
+      // this.initTimedeltaCharts()
+      this.id = this.$route.query.id
+      console.log(this.$route.query.id)
+      this.fetchData()
+    },
     show0() {
       this.$router.push({ name: 'Page', params: { id: '0' }})
     },
@@ -179,9 +187,8 @@ export default {
       //   },0)
       // },10)
       this.listLoading = true
-      getMediumFlowList().then(response => {
-        this.flowlist[this.id] = response.data.items
-        console.log(this.flowlist[this.id])
+      getMediumFlowList({ id: this.id }).then(response => {
+        this.flowlist = response.data.items
         this.total = response.data.total
         this.listLoading = false
       })
@@ -197,7 +204,7 @@ export default {
       // console.log(param)
       this.searchLoading = true
       getMediumFlowList(param).then(response => {
-        this.flowlist[this.id] = response.data.items
+        this.flowlist = response.data.items
         this.total = response.data.total
         this.searchLoading = false
         // console.log(response)
@@ -355,9 +362,9 @@ export default {
     sortChange(column) {
       this.currentPage = 1 // 排序后返回第一页
       if (column.order === 'descending') {
-        this.flowlist[this.id].sort((a, b) => b[column.prop] - a[column.prop])
+        this.flowlist.sort((a, b) => b[column.prop] - a[column.prop])
       } else if (column.order === 'ascending') {
-        this.flowlist[this.id].sort((a, b) => a[column.prop] - b[column.prop])
+        this.flowlist.sort((a, b) => a[column.prop] - b[column.prop])
       }
     }
   }

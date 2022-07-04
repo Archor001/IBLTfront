@@ -81,16 +81,10 @@ export const constantRoutes = [
             meta: { title: '数据分析', icon: 'link' }
           },
           {
-            path: 'page1',
-            name: 'Page1',
+            path: 'page',
+            name: 'Page',
             hidden: true,
-            component: () => import('@/views/congest/medium/page1')
-          },
-          {
-            path: 'page2',
-            name: 'Page2',
-            hidden: true,
-            component: () => import('@/views/congest/medium/page2')
+            component: () => import('@/views/congest/medium/page')
           }
         ]
       },

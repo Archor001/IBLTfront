@@ -81,15 +81,17 @@
       </div>
     </div> -->
 
-    <el-card>
+  <div v-for="item in flowlist" :key="item.tstamp">
+    <el-card shadow="always">
       <div slot="header">
-        <span>1970</span>
+        <span>{{ item.tstamp }}</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="show0">点击查看</el-button>
       </div>
       <div v-for="o in 4" :key="o">
         {{ '列表内容 ' + o }}
       </div>
     </el-card>
+  </div>
 
     <!-- <div class="table-lable">
       <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show1">
@@ -147,11 +149,6 @@ export default {
       srcport: null,
       dstip: '',
       dstport: null,
-
-      items: [
-        { tstamp: '1999' },
-        { tstamp: '2000' }
-      ]
     }
   },
   mounted() {
@@ -182,9 +179,10 @@ export default {
       // },10)
       this.listLoading = true
       getMediumFlowList().then(response => {
-        this.flowlist = response.data.items
+        this.flowlist = response.data
         this.total = response.data.total
         this.listLoading = false
+        console.log(response.data.length)
       })
     },
     handleSearch() {
