@@ -80,18 +80,49 @@
         </div>
       </div>
     </div> -->
+  <el-row :gutter="24">
+    <el-col :span="12" v-for="item in flowlist" :key="item.tstamp" style="margin-top:20px;">
+      <el-card style="card" shadow="hover">
+        <div slot="header">
+          <span>{{ item.tstamp }}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click.native="showPage(item.tstamp)">点击查看</el-button>
+        </div>
+        <!-- <div v-for="o in 10" :key="o">
+          {{ '列表内容 ' + o }}
+        </div> -->
+          <el-table
+            :data="item.items.slice(0,5)"
+            :stripe="stripe"
+            :row-style="{height:'10px'}"
+            size="mini"
+            highlight-current-row
+          >
+            <el-table-column align="center" label="ID">
+              <template slot-scope="scope">
+                {{ scope.$index }}
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="SrcIP" prop="srcIP">
+            </el-table-column>
+            <el-table-column align="center" label="SrcPort" prop="srcPort">
+            </el-table-column>
+            <el-table-column align="center" label="DstIP" prop="dstIP">
+            </el-table-column>
+            <el-table-column align="center" label="DstPort" prop="dstPort">
+            </el-table-column>
+            <el-table-column align="center" label="Count" prop="count" sortable='custom'>
+            </el-table-column>
+            <el-table-column align="center" prop="time" label="Time" sortable='custom'>
+              <template slot-scope="scope">
+                <i class="el-icon-time" />
+                <span>{{ scope.row.time }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
 
-  <div v-for="item in flowlist" :key="item.tstamp">
-    <el-card shadow="always">
-      <div slot="header">
-        <span>{{ item.tstamp }}</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="show0">点击查看</el-button>
-      </div>
-      <div v-for="o in 4" :key="o">
-        {{ '列表内容 ' + o }}
-      </div>
-    </el-card>
-  </div>
+      </el-card>
+    </el-col>
+  </el-row>
 
     <!-- <div class="table-lable">
       <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show1">
@@ -148,7 +179,7 @@ export default {
       srcip: '',
       srcport: null,
       dstip: '',
-      dstport: null,
+      dstport: null
     }
   },
   mounted() {
@@ -157,8 +188,8 @@ export default {
     this.fetchData()
   },
   methods: {
-    show0() {
-      this.$router.push({ name: 'Page1', query: { id: '0' }})
+    showPage(id) {
+      this.$router.push({ name: 'Page', query: { id: id }})
     },
     handleSizeChange(val) {
       this.pagesize = val
@@ -182,7 +213,6 @@ export default {
         this.flowlist = response.data
         this.total = response.data.total
         this.listLoading = false
-        console.log(response.data.length)
       })
     },
     handleSearch() {

@@ -33,16 +33,25 @@ export default {
   },
   data() {
     return {
-      hash: [],
+      id: null,
       limit: 20,
       maxflowlist: [],
       listLoading: true
     }
   },
   mounted() {
-    this.fetchData()
+    this.initialData()
+  },
+  watch: {
+    $route(to, from) {
+      this.initialData()
+    }
   },
   methods: {
+    initialData() {
+      this.id = this.$route.query.id
+      this.fetchData()
+    },
     fetchData() {
       var param = {
         limit: this.limit,
@@ -50,7 +59,7 @@ export default {
       }
       this.listLoading = true
       getMediumFlowList(param).then(response => {
-        this.maxflowlist = response.data.items
+        this.maxflowlist = response.data[this.id].items
         this.listLoading = false
         this.initBarCharts()
         this.initGaugeCharts()
@@ -99,7 +108,7 @@ export default {
           },
           data: this.maxflowlist.map(item => {
             return {
-              value: item.ID
+              value: item.id
             }
           }
           ),

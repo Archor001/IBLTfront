@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { getSNMP, getHighFlowList } from '@/api/table'
+import { getHighFlowList } from '@/api/table'
 
 // function sortByKey(array, key) {
 //   return array.sort(function(a, b) {
@@ -196,7 +196,7 @@ export default {
   }
 
   .table-wrapper {
-    padding: 32px;
+    padding: 16px 32px 32px;
     background: #fff;
   }
 

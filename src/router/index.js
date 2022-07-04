@@ -76,7 +76,7 @@ export const constantRoutes = [
           },
           {
             path: 'analyse',
-            name: 'Analyse',
+            name: 'MAnalyse',
             component: () => import('@/views/congest/medium/analyse'),
             meta: { title: '数据分析', icon: 'link' }
           },
@@ -103,7 +103,7 @@ export const constantRoutes = [
           },
           {
             path: 'analyse',
-            name: 'Analyse',
+            name: 'HAnalyse',
             component: () => import('@/views/congest/high/analyse'),
             meta: { title: '数据分析', icon: 'link' }
           }

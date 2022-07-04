@@ -68,15 +68,22 @@
         </el-table>
 
         <div class="pagination" style="margin-top:32px">
-          <el-pagination
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :page-sizes="[10, 15, 20]"
-            :page-size="pagesize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
+          <el-row :gutter="24">
+            <el-col :span="16">
+              <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[10, 15, 20]"
+                :page-size="pagesize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+              </el-pagination>
+            </el-col>
+            <el-col :span="8">
+              <el-button type="primary" size="medium" round style="float:right;" @click="jumpToAnalyse($route.query.id)">分析</el-button>
+            </el-col>
+          </el-row>
         </div>
       </div>
     </div>
@@ -143,11 +150,7 @@ export default {
       dstip: '',
       dstport: null,
 
-      id: null,
-      items: [
-        { tstamp: '1999' },
-        { tstamp: '2000' }
-      ]
+      id: null
     }
   },
   mounted() {
@@ -163,11 +166,10 @@ export default {
       // this.initQdepthCharts()
       // this.initTimedeltaCharts()
       this.id = this.$route.query.id
-      console.log(this.$route.query.id)
       this.fetchData()
     },
-    show0() {
-      this.$router.push({ name: 'Page', params: { id: '0' }})
+    jumpToAnalyse(id) {
+      this.$router.push({ name: 'MAnalyse', query: { id: id }})
     },
     handleSizeChange(val) {
       this.pagesize = val
@@ -188,8 +190,8 @@ export default {
       // },10)
       this.listLoading = true
       getMediumFlowList({ id: this.id }).then(response => {
-        this.flowlist = response.data.items
-        this.total = response.data.total
+        this.flowlist = response.data[this.id].items
+        this.total = response.data[this.id].total
         this.listLoading = false
       })
     },
@@ -392,7 +394,7 @@ export default {
   }
 
   .table-wrapper {
-    padding: 32px;
+    padding: 16px 32px 32px;
     background: #fff;
   }
 }

@@ -178,7 +178,7 @@ export default {
   }
 
   .table-wrapper {
-    padding: 32px;
+    padding: 16px 32px 32px;
     background: #fff;
   }
 
