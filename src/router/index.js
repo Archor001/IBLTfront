@@ -70,7 +70,7 @@ export const constantRoutes = [
         children: [
           {
             path: 'list',
-            name: 'List',
+            name: 'MList',
             component: () => import('@/views/congest/medium/list'),
             meta: { title: '数据统计', icon: 'link' }
           },
@@ -82,7 +82,7 @@ export const constantRoutes = [
           },
           {
             path: 'page',
-            name: 'Page',
+            name: 'MPage',
             hidden: true,
             component: () => import('@/views/congest/medium/page')
           }
@@ -97,7 +97,7 @@ export const constantRoutes = [
         children: [
           {
             path: 'list',
-            name: 'List',
+            name: 'HList',
             component: () => import('@/views/congest/high/list'),
             meta: { title: '数据统计', icon: 'link' }
           },
@@ -106,6 +106,12 @@ export const constantRoutes = [
             name: 'HAnalyse',
             component: () => import('@/views/congest/high/analyse'),
             meta: { title: '数据分析', icon: 'link' }
+          },
+          {
+            path: 'page',
+            name: 'HPage',
+            hidden: true,
+            component: () => import('@/views/congest/high/page')
           }
         ]
       }

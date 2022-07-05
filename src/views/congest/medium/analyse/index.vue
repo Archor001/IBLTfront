@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      id: null,
+      timeEqu: null,
       limit: 20,
       maxflowlist: [],
       listLoading: true
@@ -49,17 +49,22 @@ export default {
   },
   methods: {
     initialData() {
-      this.id = this.$route.query.id
+      this.timeEqu = this.$route.query.timeEqu
       this.fetchData()
     },
     fetchData() {
       var param = {
         limit: this.limit,
-        count: '1'
+        count: '1',
+        timeequ: this.timeEqu
       }
       this.listLoading = true
       getMediumFlowList(param).then(response => {
-        this.maxflowlist = response.data[this.id].items
+        if (this.$route.query.id == null) {
+          this.maxflowlist = response.data[response.data.length - 1].items
+        } else {
+          this.maxflowlist = response.data[this.id].items
+        }
         this.listLoading = false
         this.initBarCharts()
         this.initGaugeCharts()
@@ -108,7 +113,7 @@ export default {
           },
           data: this.maxflowlist.map(item => {
             return {
-              value: item.id
+              value: item.ID
             }
           }
           ),
