@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { getHighPackets, getMediumPackets } from '@/api/table'
+import { getHighPackets, getMediumPackets, getHighFlowlist } from '@/api/table'
 
 export default {
   filters: {
@@ -56,10 +56,10 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getMediumPackets().then(response => {
-        this.packetNum = response.data.items[0].sum_count
-        getHighPackets().then(response => {
-          this.packetNum += response.data.items[0].sum_count
+      getHighPackets().then(response => {
+        this.packetNum = response.data[0].items[0].count
+        getMediumPackets().then(response => {
+          this.packetNum += response.data[0].items[0].sum_count
           this.listLoading = false
           this.initBandwithCharts()
           this.initBarOneChart()

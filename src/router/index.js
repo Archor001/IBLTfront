@@ -117,11 +117,13 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/system/granular',
     name: 'System',
+    alwaysShow: true,
     meta: { title: '系统资源开销', icon: 'form' },
     children: [
       {
         path: 'granular',
         name: 'Granular',
+        hidden: true,
         component: () => import('@/views/system/granular'),
         meta: { title: '细粒度', icon: 'user' }
       },
