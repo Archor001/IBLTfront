@@ -66,23 +66,23 @@ export const constantRoutes = [
         path: 'medium',
         name: 'Medium',
         component: () => import('@/views/congest/medium/index'),
-        meta: { title: '中拥塞', icon: 'table' },
+        meta: { title: '中拥塞', icon: 'el-icon-notebook-1' },
         children: [
           {
             path: 'list',
-            name: 'List',
+            name: 'MList',
             component: () => import('@/views/congest/medium/list'),
-            meta: { title: '数据统计', icon: 'link' }
+            meta: { title: '数据统计', icon: 'el-icon-menu' }
           },
           {
             path: 'analyse',
             name: 'MAnalyse',
             component: () => import('@/views/congest/medium/analyse'),
-            meta: { title: '数据分析', icon: 'link' }
+            meta: { title: '数据分析', icon: 'el-icon-s-data' }
           },
           {
             path: 'page',
-            name: 'Page',
+            name: 'MPage',
             hidden: true,
             component: () => import('@/views/congest/medium/page')
           }
@@ -93,19 +93,25 @@ export const constantRoutes = [
         name: 'High',
         alwaysShow: true,
         component: () => import('@/views/congest/high/index'),
-        meta: { title: '高拥塞', icon: 'tree' },
+        meta: { title: '高拥塞', icon: 'el-icon-notebook-2' },
         children: [
           {
             path: 'list',
-            name: 'List',
+            name: 'HList',
             component: () => import('@/views/congest/high/list'),
-            meta: { title: '数据统计', icon: 'link' }
+            meta: { title: '数据统计', icon: 'el-icon-menu' }
           },
           {
             path: 'analyse',
             name: 'HAnalyse',
             component: () => import('@/views/congest/high/analyse'),
-            meta: { title: '数据分析', icon: 'link' }
+            meta: { title: '数据分析', icon: 'el-icon-s-data' }
+          },
+          {
+            path: 'page',
+            name: 'HPage',
+            hidden: true,
+            component: () => import('@/views/congest/high/page')
           }
         ]
       }
@@ -131,7 +137,7 @@ export const constantRoutes = [
         path: 'light',
         name: 'Light',
         component: () => import('@/views/system/light'),
-        meta: { title: '轻量级', icon: 'user' }
+        meta: { title: '轻量级', icon: 'el-icon-s-marketing' }
       }
     ]
   },

@@ -81,11 +81,12 @@
       </div>
     </div> -->
   <el-row :gutter="24">
-    <el-col :span="12" v-for="item in flowlist" :key="item.tstamp" style="margin-top:20px;">
+    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px;">
       <el-card style="card" shadow="hover">
         <div slot="header">
-          <span>{{ item.tstamp }}</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click.native="showPage(item.tstamp)">点击查看</el-button>
+          <i class="el-icon-time" />
+          <span>{{ item.time }}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click.native="showPage(item.time)">点击查看完整流信息</el-button>
         </div>
         <!-- <div v-for="o in 10" :key="o">
           {{ '列表内容 ' + o }}
@@ -97,22 +98,22 @@
             size="mini"
             highlight-current-row
           >
-            <el-table-column align="center" label="ID">
+            <el-table-column align="center" label="ID" width="50%">
               <template slot-scope="scope">
                 {{ scope.$index }}
               </template>
             </el-table-column>
             <el-table-column align="center" label="SrcIP" prop="srcIP">
             </el-table-column>
-            <el-table-column align="center" label="SrcPort" prop="srcPort">
+            <el-table-column align="center" label="SrcPort" prop="srcPort" width="80%">
             </el-table-column>
             <el-table-column align="center" label="DstIP" prop="dstIP">
             </el-table-column>
-            <el-table-column align="center" label="DstPort" prop="dstPort">
+            <el-table-column align="center" label="DstPort" prop="dstPort" width="80%">
             </el-table-column>
-            <el-table-column align="center" label="Count" prop="count" sortable='custom'>
+            <el-table-column align="center" label="Count" prop="count" width="80%">
             </el-table-column>
-            <el-table-column align="center" prop="time" label="Time" sortable='custom'>
+            <el-table-column align="center" prop="time" label="Time" width="220%">
               <template slot-scope="scope">
                 <i class="el-icon-time" />
                 <span>{{ scope.row.time }}</span>
@@ -140,9 +141,9 @@
       <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show">
         1970-1-1
       </el-button>
-      <div v-for="item in items" :key="item.tstamp">
+      <div v-for="item in items" :key="item.time">
         <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show">
-          {{ item.tstamp }}
+          {{ item.time }}
         </el-button>
       </div>
     </div> -->
@@ -188,8 +189,8 @@ export default {
     this.fetchData()
   },
   methods: {
-    showPage(id) {
-      this.$router.push({ name: 'Page', query: { id: id }})
+    showPage(time) {
+      this.$router.push({ name: 'MPage', query: { timeEqu: time }})
     },
     handleSizeChange(val) {
       this.pagesize = val
@@ -213,23 +214,6 @@ export default {
         this.flowlist = response.data
         this.total = response.data.total
         this.listLoading = false
-      })
-    },
-    handleSearch() {
-      // 创建请求对象
-      var param = {
-        srcip: this.srcip,
-        srcport: this.srcport,
-        dstip: this.dstip,
-        dstport: this.dstport
-      }
-      // console.log(param)
-      this.searchLoading = true
-      getMediumFlowList(param).then(response => {
-        this.flowlist = response.data.items
-        this.total = response.data.total
-        this.searchLoading = false
-        // console.log(response)
       })
     },
     // initQdepthCharts() {

@@ -1,21 +1,26 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row :gutter="32">
-      <el-col>
+      <el-col :span="12">
         <div class="chart-wrapper">
-          <div id="bandwith" style="height: 600px; width: 100%;"></div>
+          <div id="packetNum" style="height: 400px; width: 100%;"></div>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <div id="bandwithCsm" style="height: 400px; width: 100%;"></div>
         </div>
       </el-col>
     </el-row>
     <el-row :gutter="32">
       <el-col :span="12">
         <div class="chart-wrapper">
-          <div id="bar_one" style="height: 400px; width: 100%;"></div>
+          <div id="pie_one" style="height: 400px; width: 100%;"></div>
         </div>
       </el-col>
       <el-col :span="12">
         <div class="chart-wrapper">
-          <div id="bar_two" style="height: 400px; width: 100%;"></div>
+          <div id="pie_two" style="height: 400px; width: 100%;"></div>
         </div>
       </el-col>
     </el-row>
@@ -23,7 +28,7 @@
 </template>
 
 <script>
-import { getHighPackets, getMediumPackets, getHighFlowlist } from '@/api/table'
+import { getHighPackets, getMediumPackets, getbmPackets } from '@/api/table'
 
 export default {
   filters: {
@@ -40,11 +45,12 @@ export default {
     return {
       flowlist: [],
       listLoading: true,
-      packetNum: null
+      brPacketNum: null,
+      bmPacketNum: null
     }
   },
   mounted() {
-    this.initBandwithCharts()
+    this.initPacketNumCharts()
     this.fetchData()
   },
   methods: {
@@ -57,24 +63,35 @@ export default {
     fetchData() {
       this.listLoading = true
       getHighPackets().then(response => {
-        this.packetNum = response.data[0].items[0].count
+        this.brPacketNum = response.data[0].items[0].sum_count
         getMediumPackets().then(response => {
-          this.packetNum += response.data[0].items[0].sum_count
-          this.listLoading = false
-          this.initBandwithCharts()
-          this.initBarOneChart()
-          this.initBarTwoChart()
+          this.brPacketNum += response.data[0].items[0].sum_count
+          getbmPackets().then(response => {
+            this.bmPacketNum = response.data[0].items[0].sum_count
+            this.listLoading = false
+            this.initPacketNumCharts()
+            this.initBandwithCsmCharts()
+            this.initPieOneChart()
+            this.initPieTwoChart()
+          })
         })
       })
     },
-    initBarOneChart() {
-      var myChart = this.$echarts.init(document.getElementById('bar_one'))
+    initPieOneChart() {
+      var myChart = this.$echarts.init(document.getElementById('pie_one'))
       var option = {
         title: {
-          text: '镜像带宽开销'
+          text: 'INT镜像数据包开销'
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          formatter: (param) => {
+            var data = param.data
+            console.log(param)
+            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param.color + '"></span>'
+            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Consume' + '</span>' + '<br>' +
+                   dotColor + '<span style="color: #20253B;width:100px">' + data.name + '</span>' + ' ' + (data.value) + '<br>'
+          }
         },
         legend: {
           orient: 'horizontal',
@@ -102,16 +119,22 @@ export default {
       }
       myChart.setOption(option)
     },
-    initBarTwoChart() {
-      var myChart = this.$echarts.init(document.getElementById('bar_two'))
-      console.log(this.packetNum)
+    initPieTwoChart() {
+      var myChart = this.$echarts.init(document.getElementById('pie_two'))
+      var consumee = this.bmPacketNum * 134 * 100 / (64 * this.brPacketNum)
       var option = {
         title: {
-          text: '镜像带宽开销占比'
+          text: '镜像数据包开销占比'
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{c}%'
+          formatter: (param) => {
+            var data = param.data
+            console.log(param)
+            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param.color + '"></span>'
+            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Ratio' + '</span>' + '<br>' +
+                   dotColor + '<span style="color: #20253B;width:100px">' + data.name + '</span>' + ' ' + (data.value) + '%' + '<br>'
+          }
         },
         legend: {
           orient: 'horizontal',
@@ -127,9 +150,8 @@ export default {
               formatter: '{b}:{c}%'
             },
             data: [
-              // 1024*134/64/count
-              { value: 1024 * 134 * 100 / (64 * this.packetNum), name: 'Burst Monitor', itemStyle: { color: '#ed7d31' }},
-              { value: 100 - 1024 * 134 * 100 / (64 * this.packetNum), name: 'Background', itemStyle: { color: '#5470c6' }}
+              { value: 100-parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
+              { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
             ],
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
@@ -138,8 +160,8 @@ export default {
       }
       myChart.setOption(option)
     },
-    initBandwithCharts() {
-      var myChart = this.$echarts.init(document.getElementById('bandwith'))
+    initPacketNumCharts() {
+      var myChart = this.$echarts.init(document.getElementById('packetNum'))
       var option = {
         title: {
           text: '镜像数据包个数对比'
@@ -159,10 +181,11 @@ export default {
           }
         },
         legend: {
-          data: ['number_of_packets']
+          data: ['number_of_packets'],
+          bottom: '3%'
         },
         xAxis: {
-          data: ['INT', 'Burst Monitor'],
+          data: ['INT/BurstRadar', 'BurstMonitor'],
           // boundaryGap: false
           axisTick: {
             show: false
@@ -197,7 +220,75 @@ export default {
             itemStyle: {
               color: '#5470c6'
             },
-            data: [this.packetNum, 1024],
+            data: [this.brPacketNum, this.bmPacketNum],
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
+          }
+        ]
+      }
+      myChart.setOption(option)
+    },
+    initBandwithCsmCharts() {
+      var myChart = this.$echarts.init(document.getElementById('bandwithCsm'))
+      var option = {
+        title: {
+          text: '镜像带宽开销对比'
+        },
+        tooltip: {
+          trigger: 'axis',
+          show: true,
+          axisPointer: {
+            type: 'shadow'
+          },
+          padding: [5, 10],
+          formatter: (params) => {
+            // console.log(param)
+            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[0].color + '"></span>'
+            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + params[0].axisValue + '</span>' + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + params[0].seriesName + '</span>' + ':' + (params[0].data)
+          }
+        },
+        legend: {
+          data: ['comsume_of_bandwith'],
+          bottom: '3%'
+        },
+        xAxis: {
+          data: ['INT', 'BurstMonitor'],
+          // boundaryGap: false
+          axisTick: {
+            show: false
+          }
+        },
+        grid: {
+          containLable: true
+        },
+        yAxis: {
+          show: true,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#86878f'
+            }
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        series: [
+          {
+            name: 'comsume_of_bandwith',
+            type: 'bar',
+            barGap: '10%',
+            barMaxWidth: '20%',
+            label: {
+              show: true,
+              position: 'top',
+              formatter: '{c}'
+            },
+            itemStyle: {
+              color: '#5470c6'
+            },
+            data: [100, (80 * this.bmPacketNum / 75 / this.brPacketNum)],
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }

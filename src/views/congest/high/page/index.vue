@@ -15,7 +15,7 @@
       </el-col>
     </el-row> -->
 
-    <!-- <div>
+    <div>
       <div class="table-lable">
         <label>流信息统计</label>
       </div>
@@ -68,62 +68,26 @@
         </el-table>
 
         <div class="pagination" style="margin-top:32px">
-          <el-pagination
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :page-sizes="[10, 15, 20]"
-            :page-size="pagesize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-          </el-pagination>
+          <el-row :gutter="24">
+            <el-col :span="16">
+              <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-sizes="[10, 15, 20]"
+                :page-size="pagesize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+              </el-pagination>
+            </el-col>
+            <el-col :span="8">
+              <el-button type="primary" size="medium" round style="float:right;" @click="jumpToAnalyse($route.query.timeEqu)">分析</el-button>
+            </el-col>
+          </el-row>
         </div>
       </div>
-    </div> -->
-  <el-row :gutter="12">
-    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px;">
-      <el-card style="card" shadow="hover">
-        <div slot="header">
-          <i class="el-icon-time" />
-          <span>{{ item.time }}</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click.native="showPage(item.time)">点击查看完整流信息</el-button>
-        </div>
-        <!-- <div v-for="o in 10" :key="o">
-          {{ '列表内容 ' + o }}
-        </div> -->
-          <el-table
-            :data="item.items.slice(0,5)"
-            :stripe="stripe"
-            :row-style="{height:'10px'}"
-            size="mini"
-            highlight-current-row
-          >
-            <el-table-column align="center" label="ID" width="50%">
-              <template slot-scope="scope">
-                {{ scope.$index }}
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="SrcIP" prop="srcIP">
-            </el-table-column>
-            <el-table-column align="center" label="SrcPort" prop="srcPort" width="80%">
-            </el-table-column>
-            <el-table-column align="center" label="DstIP" prop="dstIP">
-            </el-table-column>
-            <el-table-column align="center" label="DstPort" prop="dstPort" width="80%">
-            </el-table-column>
-            <el-table-column align="center" label="Count" prop="count" width="80%">
-            </el-table-column>
-            <el-table-column align="center" prop="time" label="Time" width="220%">
-              <template slot-scope="scope">
-                <i class="el-icon-time" />
-                <span>{{ scope.row.time }}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-
-      </el-card>
-    </el-col>
-  </el-row>
+    </div>
 
     <!-- <div class="table-lable">
       <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show1">
@@ -152,8 +116,13 @@
 
 <script>
 import { getHighFlowList } from '@/api/table'
+import SrcipOption from '../../components/SrcipOption'
+import SrcportOption from '../../components/SrcportOption'
+import DstipOption from '../../components/DstipOption'
+import DstportOption from '../../components/DstportOption'
 
 export default {
+  components: { SrcipOption, SrcportOption, DstipOption, DstportOption },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -180,18 +149,30 @@ export default {
       srcip: '',
       srcport: null,
       dstip: '',
-      dstport: null
+      dstport: null,
+
+      timeEqu: null
     }
   },
   mounted() {
-    // this.initQdepthCharts()
-    // this.initTimedeltaCharts()
-    this.fetchData()
+    this.initialData()
+  },
+  watch: {
+    $route(to, from) {
+      this.initialData()
+    }
   },
   methods: {
-    showPage(time) {
-      console.log(time)
-      this.$router.push({ name: 'HPage', query: { timeEqu: time }})
+    initialData() {
+      // this.initQdepthCharts()
+      // this.initTimedeltaCharts()
+      this.timeEqu = this.$route.query.timeEqu
+      // console.log(this.timeEqu)
+      this.fetchData()
+    },
+    jumpToAnalyse(time) {
+      // console.log(time)
+      this.$router.push({ name: 'HAnalyse', query: { timeEqu: time }})
     },
     handleSizeChange(val) {
       this.pagesize = val
@@ -211,10 +192,28 @@ export default {
       //   },0)
       // },10)
       this.listLoading = true
-      getHighFlowList().then(response => {
-        this.flowlist = response.data
-        this.total = response.data.total
+      getHighFlowList({ timeequ: this.timeEqu }).then(response => {
+        this.flowlist = response.data[0].items
+        this.total = response.data[0].total
         this.listLoading = false
+      })
+    },
+    handleSearch() {
+      // 创建请求对象
+      var param = {
+        srcip: this.srcip,
+        srcport: this.srcport,
+        dstip: this.dstip,
+        dstport: this.dstport,
+        timeequ: this.timeEqu
+      }
+      // console.log(param)
+      this.searchLoading = true
+      getHighFlowList(param).then(response => {
+        this.flowlist = response.data[0].items
+        this.total = response.data[0].total
+        this.searchLoading = false
+        // console.log(response)
       })
     },
     // initQdepthCharts() {
@@ -399,7 +398,7 @@ export default {
   }
 
   .table-wrapper {
-    padding: 32px;
+    padding: 16px 32px 32px;
     background: #fff;
   }
 }

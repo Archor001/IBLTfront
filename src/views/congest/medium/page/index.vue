@@ -74,6 +74,7 @@
                 background
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
                 :page-sizes="[10, 15, 20]"
                 :page-size="pagesize"
                 layout="total, sizes, prev, pager, next, jumper"
@@ -81,7 +82,7 @@
               </el-pagination>
             </el-col>
             <el-col :span="8">
-              <el-button type="primary" size="medium" round style="float:right;" @click="jumpToAnalyse($route.query.id)">分析</el-button>
+              <el-button type="primary" size="medium" round style="float:right;" @click="jumpToAnalyse($route.query.timeEqu)">分析</el-button>
             </el-col>
           </el-row>
         </div>
@@ -104,9 +105,9 @@
       <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show">
         1970-1-1
       </el-button>
-      <div v-for="item in items" :key="item.tstamp">
+      <div v-for="item in items" :key="item.time">
         <el-button style="height:250px;width:19%;margin:0 0.5% 20px;" type="primary" @click="show">
-          {{ item.tstamp }}
+          {{ item.time }}
         </el-button>
       </div>
     </div> -->
@@ -150,7 +151,7 @@ export default {
       dstip: '',
       dstport: null,
 
-      id: null
+      timeEqu: null
     }
   },
   mounted() {
@@ -165,11 +166,11 @@ export default {
     initialData() {
       // this.initQdepthCharts()
       // this.initTimedeltaCharts()
-      this.id = this.$route.query.id
+      this.timeEqu = this.$route.query.timeEqu
       this.fetchData()
     },
-    jumpToAnalyse(id) {
-      this.$router.push({ name: 'MAnalyse', query: { id: id }})
+    jumpToAnalyse(time) {
+      this.$router.push({ name: 'MAnalyse', query: { timeEqu: time }})
     },
     handleSizeChange(val) {
       this.pagesize = val
@@ -189,9 +190,9 @@ export default {
       //   },0)
       // },10)
       this.listLoading = true
-      getMediumFlowList({ id: this.id }).then(response => {
-        this.flowlist = response.data[this.id].items
-        this.total = response.data[this.id].total
+      getMediumFlowList({ timeequ: this.timeEqu }).then(response => {
+        this.flowlist = response.data[0].items
+        this.total = response.data[0].total
         this.listLoading = false
       })
     },
@@ -201,13 +202,14 @@ export default {
         srcip: this.srcip,
         srcport: this.srcport,
         dstip: this.dstip,
-        dstport: this.dstport
+        dstport: this.dstport,
+        timeequ: this.timeEqu
       }
       // console.log(param)
       this.searchLoading = true
       getMediumFlowList(param).then(response => {
-        this.flowlist = response.data.items
-        this.total = response.data.total
+        this.flowlist = response.data[0].items
+        this.total = response.data[0].total
         this.searchLoading = false
         // console.log(response)
       })

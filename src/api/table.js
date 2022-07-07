@@ -44,3 +44,12 @@ export function getMediumPackets(params) {
     data: params
   })
 }
+
+//BurstMonitor数据包总数
+export function getbmPackets(params) {
+  return request({
+    url: '/IBLT/congest/bm_sum',
+    method: 'post',
+    data: params
+  })
+}

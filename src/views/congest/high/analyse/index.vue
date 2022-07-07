@@ -33,24 +33,39 @@ export default {
   },
   data() {
     return {
-      hash: [],
+      timeEqu: null,
       limit: 20,
       maxflowlist: [],
       listLoading: true
     }
   },
   mounted() {
-    this.fetchData()
+    this.initialData()
+  },
+  watch: {
+    $route(to, from) {
+      this.initialData()
+    }
   },
   methods: {
+    initialData() {
+      this.timeEqu = this.$route.query.timeEqu
+      this.fetchData()
+    },
     fetchData() {
       var param = {
         limit: this.limit,
-        count: '1'
+        count: '1',
+        timeequ: this.timeEqu
       }
       this.listLoading = true
       getHighFlowList(param).then(response => {
-        this.maxflowlist = response.data.items
+        if (this.$route.query.id == null) {
+          this.maxflowlist = response.data[response.data.length - 1].items
+        } else {
+          this.maxflowlist = response.data[this.id].items
+        }
+        // console.log(this.maxflowlist)
         this.listLoading = false
         this.initBarCharts()
         this.initGaugeCharts()
