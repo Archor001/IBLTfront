@@ -81,7 +81,7 @@
       </div>
     </div> -->
   <el-row :gutter="12">
-    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px;">
+    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px;height:315px">
       <el-card style="card" shadow="hover">
         <div slot="header">
           <i class="el-icon-time" />
