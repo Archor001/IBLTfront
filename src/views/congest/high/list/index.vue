@@ -213,6 +213,7 @@ export default {
       this.listLoading = true
       getHighFlowList().then(response => {
         this.flowlist = response.data
+        this.flowlist.sort((a, b) => { return a.time < b.time })
         this.total = response.data.total
         this.listLoading = false
       })

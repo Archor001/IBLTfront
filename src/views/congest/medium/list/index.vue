@@ -203,6 +203,7 @@ export default {
       getMediumFlowList().then(response => {
         this.flowlist = response.data
         this.total = response.data.length
+        this.flowlist.sort((a, b) => { return a.time < b.time })
         for (var i = 0; i < this.total; i++) {
           var len = this.flowlist[i].items.length
           for (var j = len; j < 5; j++) {
