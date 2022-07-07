@@ -199,16 +199,6 @@ export default {
       this.currentPage = val
     },
     fetchData() {
-      // window.setInterval(() => {
-      //   setTimeout(() => {
-      //     this.listLoading = true
-      //     getMediumFlowList().then(response => {
-      //       this.flowlist = response.data.items
-      //       this.total = response.data.total
-      //       this.listLoading = false
-      //     })
-      //   },0)
-      // },10)
       this.listLoading = true
       getMediumFlowList().then(response => {
         this.flowlist = response.data
