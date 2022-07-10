@@ -44,7 +44,6 @@ export default {
   data() {
     return {
       flowlist: [],
-      listLoading: true,
       brPacketNum: null,
       bmPacketNum: null
     }
@@ -61,21 +60,23 @@ export default {
       this.currentPage = val
     },
     fetchData() {
-      this.listLoading = true
-      getHighPackets().then(response => {
-        this.brPacketNum = response.data[0].items[0].sum_count
-        getMediumPackets().then(response => {
-          this.brPacketNum += response.data[0].items[0].sum_count
-          getbmPackets().then(response => {
-            this.bmPacketNum = response.data[0].items[0].sum_count
-            this.listLoading = false
-            this.initPacketNumCharts()
-            this.initBandwithCsmCharts()
-            this.initPieOneChart()
-            this.initPieTwoChart()
+      window.setInterval(() => {
+        setTimeout(() => {
+          getHighPackets().then(response => {
+            this.brPacketNum = response.data[0].items[0].sum_count
+            getMediumPackets().then(response => {
+              this.brPacketNum += response.data[0].items[0].sum_count
+              getbmPackets().then(response => {
+                this.bmPacketNum = response.data[0].items[0].sum_count
+                this.initPacketNumCharts()
+                this.initBandwithCsmCharts()
+                this.initPieOneChart()
+                this.initPieTwoChart()
+              })
+            })
           })
-        })
-      })
+        }, 0)
+      }, 500)
     },
     initPieOneChart() {
       var myChart = this.$echarts.init(document.getElementById('pie_one'))
@@ -112,7 +113,7 @@ export default {
             data: [
               { value: 100, name: 'INT' }
             ],
-            animationDuration: 2800,
+            animationDuration: 280,
             animationEasing: 'quadraticOut'
           }
         ]
@@ -153,7 +154,7 @@ export default {
               { value: 100 - parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
               { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
             ],
-            animationDuration: 2800,
+            animationDuration: 280,
             animationEasing: 'quadraticOut'
           }
         ]
@@ -221,7 +222,7 @@ export default {
               color: '#5470c6'
             },
             data: [this.brPacketNum, this.bmPacketNum],
-            animationDuration: 2800,
+            animationDuration: 280,
             animationEasing: 'quadraticOut'
           }
         ]
@@ -289,7 +290,7 @@ export default {
               color: '#5470c6'
             },
             data: [100, (80 * this.bmPacketNum / 75 / this.brPacketNum)],
-            animationDuration: 2800,
+            animationDuration: 280,
             animationEasing: 'quadraticOut'
           }
         ]

@@ -223,7 +223,7 @@ export default {
             }
           })
         }, 0)
-      }, 1000)
+      }, 500)
     },
     // initQdepthCharts() {
     //   var myChart = this.$echarts.init(document.getElementById('qdepth'))

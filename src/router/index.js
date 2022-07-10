@@ -64,7 +64,7 @@ export const constantRoutes = [
       {
         path: 'compare',
         name: "Compare",
-        // hidden: true,
+        hidden: true,
         component: () => import('@/views/dataset/compare'),
         meta : { title: '带宽对比', icon: 'el-icon-data-analysis' }
       },

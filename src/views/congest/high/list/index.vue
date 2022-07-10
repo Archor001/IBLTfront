@@ -223,7 +223,7 @@ export default {
             }
           })
         }, 0)
-      }, 1000)
+      }, 500)
 
       // getHighFlowList().then(response => {
       //   this.flowlist = response.data

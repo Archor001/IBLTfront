@@ -5,7 +5,7 @@
         <!-- <el-image
           :src="require('../../../assets/bandwith/pt' + (item.id) + ' link speed per ' + item.gap[1] + item.suffix)"
           :fit="fit"></el-image> -->
-        <el-carousel trigger="click">
+        <el-carousel trigger="click" height="400px">
           <el-carousel-item v-for="gap in item.gap" :key="gap">
             <el-image
               :src="require('../../../assets/bandwith/pt' + (item.id) + ' link speed per ' + gap + item.suffix)"
