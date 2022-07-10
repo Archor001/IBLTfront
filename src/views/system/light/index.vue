@@ -150,7 +150,7 @@ export default {
               formatter: '{b}:{c}%'
             },
             data: [
-              { value: 100-parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
+              { value: 100 - parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
               { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
             ],
             animationDuration: 2800,

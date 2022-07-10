@@ -20,10 +20,10 @@
         <label>流信息统计</label>
       </div>
       <div class="table-lable">
-        <SrcipOption v-model="srcip"/>
-        <SrcportOption v-model="srcport"/>
-        <DstipOption v-model="dstip"/>
-        <DstportOption v-model="dstport"/>
+        <SrcipOption v-model="srcip"  @keyup.enter.native="handleSearch" />
+        <SrcportOption v-model="srcport"  @keyup.enter.native="handleSearch" />
+        <DstipOption v-model="dstip"  @keyup.enter.native="handleSearch" />
+        <DstportOption v-model="dstport"  @keyup.enter.native="handleSearch" />
         <el-button :loading="searchLoading" style="margin:0 0 20px 20px;" type="primary" @click="handleSearch">
           搜索
         </el-button>
@@ -191,8 +191,13 @@ export default {
       // },10)
       this.listLoading = true
       getMediumFlowList({ timeequ: this.timeEqu }).then(response => {
-        this.flowlist = response.data[0].items
-        this.total = response.data[0].total
+        if (response.data.length !== 0) {
+          this.flowlist = response.data[0].items
+          this.total = response.data[0].total
+        } else {
+          this.flowlist = []
+          this.total = 0
+        }
         this.listLoading = false
       })
     },
@@ -208,8 +213,13 @@ export default {
       // console.log(param)
       this.searchLoading = true
       getMediumFlowList(param).then(response => {
-        this.flowlist = response.data[0].items
-        this.total = response.data[0].total
+        if (response.data.length !== 0) {
+          this.flowlist = response.data[0].items
+          this.total = response.data[0].total
+        } else {
+          this.flowlist = []
+          this.total = 0
+        }
         this.searchLoading = false
         // console.log(response)
       })

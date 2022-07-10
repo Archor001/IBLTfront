@@ -81,7 +81,7 @@
       </div>
     </div> -->
   <el-row :gutter="24">
-    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px;height:315px">
+    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px">
       <el-card style="card" shadow="hover">
         <div slot="header">
           <i class="el-icon-time" />
@@ -199,29 +199,31 @@ export default {
       this.currentPage = val
     },
     fetchData() {
-      this.listLoading = true
-      getMediumFlowList().then(response => {
-        this.flowlist = response.data
-        this.total = response.data.length
-        this.flowlist.sort((a, b) => { return a.time < b.time })
-        for (var i = 0; i < this.total; i++) {
-          var len = this.flowlist[i].items.length
-          for (var j = len; j < 5; j++) {
-            this.flowlist[i].items.push({
-              time: '--',
-              count: '--',
-              srcIP: '--',
-              srcPort: '--',
-              dstIP: '--',
-              dstPort: '--',
-              protocol: '--',
-              ID: '--',
-              hash: '--'
-            })
-          }
-        }
-        this.listLoading = false
-      })
+      window.setInterval(() => {
+        setTimeout(() => {
+          getMediumFlowList().then(response => {
+            this.flowlist = response.data
+            this.total = response.data.length
+            this.flowlist.sort((a, b) => { return a.time < b.time })
+            for (var i = 0; i < this.total; i++) {
+              var len = this.flowlist[i].items.length
+              for (var j = len; j < 5; j++) {
+                this.flowlist[i].items.push({
+                  time: '--',
+                  count: '--',
+                  srcIP: '--',
+                  srcPort: '--',
+                  dstIP: '--',
+                  dstPort: '--',
+                  protocol: '--',
+                  ID: '--',
+                  hash: '--'
+                })
+              }
+            }
+          })
+        }, 0)
+      }, 1000)
     },
     // initQdepthCharts() {
     //   var myChart = this.$echarts.init(document.getElementById('qdepth'))

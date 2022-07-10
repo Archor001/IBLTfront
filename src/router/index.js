@@ -56,6 +56,54 @@ export const constantRoutes = [
   },
 
   {
+    path: '/dataset',
+    component: Layout,
+    name: 'Dataset',
+    meta: { title: '数据集', icon: 'el-icon-magic-stick' },
+    children: [
+      {
+        path: 'compare',
+        name: "Compare",
+        // hidden: true,
+        component: () => import('@/views/dataset/compare'),
+        meta : { title: '带宽对比', icon: 'el-icon-data-analysis' }
+      },
+      {
+        path: 'one_sec',
+        name: 'OneSec',
+        component: () => import('@/views/dataset/onesec'),
+        meta: { title: '1s粒度带宽曲线', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: 'hundred_millisec',
+        name: 'HundredMillisec',
+        component: () => import('@/views/dataset/hundredmillisec'),
+        meta: { title: '100ms粒度带宽曲线', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: 'ten_millisec',
+        name: 'TenMillisec',
+        component: () => import('@/views/dataset/tenmillisec'),
+        meta: { title: '10ms粒度带宽曲线', icon: 'el-icon-s-marketing' }
+      }
+    ]
+  },
+
+  {
+    path: '/queueDelay',
+    component: Layout,
+    name: 'QueueDelay',
+    children: [
+      {
+        path: '/delay',
+        name: 'Delay',
+        component: () => import('@/views/delay/index'),
+        meta: { title: '排队时延', icon: 'el-icon-orange' }
+      }
+    ]
+  },
+
+  {
     path: '/congest',
     component: Layout,
     redirect: '/congest/medium',

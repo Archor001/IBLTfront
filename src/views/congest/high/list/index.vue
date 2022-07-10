@@ -81,7 +81,7 @@
       </div>
     </div> -->
   <el-row :gutter="12">
-    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px;height:315px">
+    <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px">
       <el-card style="card" shadow="hover">
         <div slot="header">
           <i class="el-icon-time" />
@@ -169,7 +169,6 @@ export default {
       // 中拥塞流信息
       flowlist: [],
       // 处理分页
-      listLoading: true,
       stripe: true,
       tableData: [],
       currentPage: 1,
@@ -200,23 +199,37 @@ export default {
       this.currentPage = val
     },
     fetchData() {
-      // window.setInterval(() => {
-      //   setTimeout(() => {
-      //     this.listLoading = true
-      //     getHighFlowList().then(response => {
-      //       this.flowlist = response.data.items
-      //       this.total = response.data.total
-      //       this.listLoading = false
-      //     })
-      //   },0)
-      // },10)
-      this.listLoading = true
-      getHighFlowList().then(response => {
-        this.flowlist = response.data
-        this.flowlist.sort((a, b) => { return a.time < b.time })
-        this.total = response.data.total
-        this.listLoading = false
-      })
+      window.setInterval(() => {
+        setTimeout(() => {
+          getHighFlowList().then(response => {
+            this.flowlist = response.data
+            this.total = response.data.length
+            this.flowlist.sort((a, b) => { return a.time < b.time })
+            for (var i = 0; i < this.total; i++) {
+              var len = this.flowlist[i].items.length
+              for (var j = len; j < 5; j++) {
+                this.flowlist[i].items.push({
+                  time: '--',
+                  count: '--',
+                  srcIP: '--',
+                  srcPort: '--',
+                  dstIP: '--',
+                  dstPort: '--',
+                  protocol: '--',
+                  ID: '--',
+                  hash: '--'
+                })
+              }
+            }
+          })
+        }, 0)
+      }, 1000)
+
+      // getHighFlowList().then(response => {
+      //   this.flowlist = response.data
+      //   this.flowlist.sort((a, b) => { return a.time < b.time })
+      //   this.total = response.data.total
+      // })
     },
     // initQdepthCharts() {
     //   var myChart = this.$echarts.init(document.getElementById('qdepth'))
