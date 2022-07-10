@@ -106,7 +106,6 @@ export const constantRoutes = [
   {
     path: '/congest',
     component: Layout,
-    redirect: '/congest/medium',
     name: 'Congest',
     meta: { title: '拥塞信息', icon: 'el-icon-s-help' },
     children: [

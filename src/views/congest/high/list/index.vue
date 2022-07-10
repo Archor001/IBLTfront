@@ -103,17 +103,17 @@
                 {{ scope.$index }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="SrcIP" prop="srcIP">
+            <el-table-column align="center" label="SrcIP" prop="srcIP" width="120%">
             </el-table-column>
-            <el-table-column align="center" label="SrcPort" prop="srcPort" width="80%">
+            <el-table-column align="center" label="SrcPort" prop="srcPort" width="100%">
             </el-table-column>
-            <el-table-column align="center" label="DstIP" prop="dstIP">
+            <el-table-column align="center" label="DstIP" prop="dstIP" width="120%">
             </el-table-column>
-            <el-table-column align="center" label="DstPort" prop="dstPort" width="80%">
+            <el-table-column align="center" label="DstPort" prop="dstPort" width="100%">
             </el-table-column>
-            <el-table-column align="center" label="Count" prop="count" width="80%">
+            <el-table-column align="center" label="Count" prop="count" width="100%">
             </el-table-column>
-            <el-table-column align="center" prop="time" label="Time" width="220%">
+            <el-table-column align="center" prop="time" label="Time" width="300%">
               <template slot-scope="scope">
                 <i class="el-icon-time" />
                 <span>{{ scope.row.time }}</span>
@@ -179,7 +179,9 @@ export default {
       srcip: '',
       srcport: null,
       dstip: '',
-      dstport: null
+      dstport: null,
+
+      timer: null
     }
   },
   mounted() {
@@ -189,7 +191,6 @@ export default {
   },
   methods: {
     showPage(time) {
-      console.log(time)
       this.$router.push({ name: 'HPage', query: { timeEqu: time }})
     },
     handleSizeChange(val) {
@@ -199,7 +200,7 @@ export default {
       this.currentPage = val
     },
     fetchData() {
-      window.setInterval(() => {
+      this.timer = window.setInterval(() => {
         setTimeout(() => {
           getHighFlowList().then(response => {
             this.flowlist = response.data
@@ -223,7 +224,7 @@ export default {
             }
           })
         }, 0)
-      }, 500)
+      }, 1000)
 
       // getHighFlowList().then(response => {
       //   this.flowlist = response.data
@@ -388,6 +389,10 @@ export default {
         this.flowlist.sort((a, b) => a[column.prop] - b[column.prop])
       }
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+    this.timer = null
   }
 }
 </script>

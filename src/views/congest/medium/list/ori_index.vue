@@ -80,7 +80,7 @@
         </div>
       </div>
     </div> -->
-  <el-row :gutter="12">
+  <el-row :gutter="24">
     <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px">
       <el-card style="card" shadow="hover">
         <div slot="header">
@@ -103,17 +103,17 @@
                 {{ scope.$index }}
               </template>
             </el-table-column>
-            <el-table-column align="center" label="SrcIP" prop="srcIP" width="120%">
+            <el-table-column align="center" label="SrcIP" prop="srcIP">
             </el-table-column>
-            <el-table-column align="center" label="SrcPort" prop="srcPort" width="100%">
+            <el-table-column align="center" label="SrcPort" prop="srcPort" width="80%">
             </el-table-column>
-            <el-table-column align="center" label="DstIP" prop="dstIP" width="120%">
+            <el-table-column align="center" label="DstIP" prop="dstIP">
             </el-table-column>
-            <el-table-column align="center" label="DstPort" prop="dstPort" width="100%">
+            <el-table-column align="center" label="DstPort" prop="dstPort" width="80%">
             </el-table-column>
-            <el-table-column align="center" label="Count" prop="count" width="100%">
+            <el-table-column align="center" label="Count" prop="count" width="80%">
             </el-table-column>
-            <el-table-column align="center" prop="time" label="Time" width="300%">
+            <el-table-column align="center" prop="time" label="Time" width="220%">
               <template slot-scope="scope">
                 <i class="el-icon-time" />
                 <span>{{ scope.row.time }}</span>
@@ -152,6 +152,7 @@
 
 <script>
 import { getMediumFlowList } from '@/api/table'
+import { clearInterval } from 'timers'
 
 export default {
   filters: {
@@ -180,7 +181,6 @@ export default {
       srcport: null,
       dstip: '',
       dstport: null,
-
       timer: null
     }
   },
@@ -224,13 +224,8 @@ export default {
             }
           })
         }, 0)
-      }, 1000)
-
-      // getMediumFlowList().then(response => {
-      //   this.flowlist = response.data
-      //   this.flowlist.sort((a, b) => { return a.time < b.time })
-      //   this.total = response.data.total
-      // })
+      }, 2000)
+      console.log(this.timer)
     },
     // initQdepthCharts() {
     //   var myChart = this.$echarts.init(document.getElementById('qdepth'))

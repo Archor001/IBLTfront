@@ -45,7 +45,8 @@ export default {
     return {
       flowlist: [],
       brPacketNum: null,
-      bmPacketNum: null
+      bmPacketNum: null,
+      timer: null
     }
   },
   mounted() {
@@ -60,7 +61,7 @@ export default {
       this.currentPage = val
     },
     fetchData() {
-      window.setInterval(() => {
+      this.timer = window.setInterval(() => {
         setTimeout(() => {
           getHighPackets().then(response => {
             this.brPacketNum = response.data[0].items[0].sum_count
@@ -76,7 +77,7 @@ export default {
             })
           })
         }, 0)
-      }, 500)
+      }, 1000)
     },
     initPieOneChart() {
       var myChart = this.$echarts.init(document.getElementById('pie_one'))
@@ -297,6 +298,10 @@ export default {
       }
       myChart.setOption(option)
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+    this.timer = null
   }
 }
 </script>

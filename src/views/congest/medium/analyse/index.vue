@@ -36,7 +36,7 @@ export default {
       timeEqu: null,
       limit: 20,
       maxflowlist: [],
-      listLoading: true
+      timer: null
     }
   },
   mounted() {
@@ -53,21 +53,22 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      var param = {
-        limit: this.limit,
-        count: '1',
-        timeequ: this.timeEqu
-      }
-      this.listLoading = true
-      getMediumFlowList(param).then(response => {
-        if (this.$route.query.id == null) {
-          this.maxflowlist = response.data[response.data.length - 1].items
-        } else {
-          this.maxflowlist = response.data[this.id].items
+      getMediumFlowList().then(response => {
+        this.timeEqu = response.data[0].time
+        var param = {
+          limit: this.limit,
+          count: '1',
+          timeequ: this.timeEqu
         }
-        this.listLoading = false
-        this.initBarCharts()
-        this.initGaugeCharts()
+        this.timer = window.setInterval(() => {
+          setTimeout(() => {
+            getMediumFlowList(param).then(response => {
+              this.maxflowlist = response.data[response.data.length - 1].items
+              this.initBarCharts()
+              this.initGaugeCharts()
+            })
+          }, 0)
+        }, 1000)
       })
     },
     initBarCharts() {
@@ -217,6 +218,10 @@ export default {
       }
       myPieChart.setOption(option)
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+    this.timer = null
   }
 }
 </script>
