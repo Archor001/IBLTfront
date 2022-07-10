@@ -53,23 +53,42 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      getMediumFlowList().then(response => {
-        this.timeEqu = response.data[0].time
-        var param = {
-          limit: this.limit,
-          count: '1',
-          timeequ: this.timeEqu
-        }
+      // 显示最新流
+      if( this.timeEqu == null ){
         this.timer = window.setInterval(() => {
           setTimeout(() => {
+            getMediumFlowList().then(response => {
+              this.timeEqu = response.data[response.data.length - 1].time
+              console.log(this.timeEqu)
+              var param = {
+                limit: this.limit,
+                count: '1',
+                timeequ: this.timeEqu
+              }
+              getMediumFlowList(param).then(response => {
+                this.maxflowlist = response.data[0].items
+                this.initBarCharts()
+                this.initGaugeCharts()
+              })
+            })
+          }, 0)
+        }, 1000)
+      } else {
+        this.timer = window.setInterval(() => {
+          setTimeout(() => {
+            var param = {
+              limit: this.limit,
+              count: '1',
+              timeequ: this.timeEqu
+            }
             getMediumFlowList(param).then(response => {
-              this.maxflowlist = response.data[response.data.length - 1].items
+              this.maxflowlist = response.data[0].items
               this.initBarCharts()
               this.initGaugeCharts()
             })
           }, 0)
         }, 1000)
-      })
+      }
     },
     initBarCharts() {
       var myBarChart = this.$echarts.init(document.getElementById('barchart'))
@@ -222,6 +241,7 @@ export default {
   beforeDestroy() {
     clearInterval(this.timer)
     this.timer = null
+    this.timeEqu = null
   }
 }
 </script>

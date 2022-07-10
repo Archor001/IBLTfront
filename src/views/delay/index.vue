@@ -7,9 +7,6 @@
     </el-carousel> -->
     <el-row :gutter="12">
       <el-col :span="8" v-for="item in queueList" :key="item.id" style="margin-top:20px">
-        <div class="table-lable">
-          <label>{{ item.title }}</label>
-        </div>
         <el-image
           :src="require('../../assets/delay/pt'+(item.id)+' queue sim.svg')"
           :fit="fit"></el-image>
