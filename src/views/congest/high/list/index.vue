@@ -80,12 +80,14 @@
         </div>
       </div>
     </div> -->
+  <span v-if="1 + 1 === 3">123</span>
   <el-row :gutter="12">
     <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px">
       <el-card style="card" shadow="hover">
         <div slot="header">
           <i class="el-icon-time" />
           <span>{{ item.time }}</span>
+          <el-radio disabled v-if="item.items[0].transport === 'grpc'" style="margin-left:20px">GRPC</el-radio>
           <el-button style="float: right; padding: 3px 0" type="text" @click.native="showPage(item.time)">点击查看完整流信息</el-button>
         </div>
         <!-- <div v-for="o in 10" :key="o">

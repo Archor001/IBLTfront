@@ -86,6 +86,7 @@
         <div slot="header">
           <i class="el-icon-time" />
           <span>{{ item.time }}</span>
+          <el-radio disabled v-if="item.items[0].transport === 'grpc'" style="margin-left:20px">GRPC</el-radio>
           <el-button style="float: right; padding: 3px 0" type="text" @click.native="showPage(item.time)">点击查看完整流信息</el-button>
         </div>
         <!-- <div v-for="o in 10" :key="o">
