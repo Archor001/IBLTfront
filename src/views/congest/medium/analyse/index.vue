@@ -1,5 +1,10 @@
 <template>
   <div class="dashboard-editor-container">
+    <div class="list-label">
+      <i class="el-icon-view"></i>
+      <span v-if=" this.$route.query.timeEqu "> {{ this.$route.query.timeEqu }} 流信息统计</span>
+      <span v-else> 最新时间戳流信息统计 </span>
+    </div>
     <el-row :gutter="32">
       <el-col :span="24">
         <div class="chart-wrapper">
@@ -54,12 +59,12 @@ export default {
     },
     fetchData() {
       // 显示最新流
-      if( this.timeEqu == null ){
+      if (this.timeEqu === null) {
         this.timer = window.setInterval(() => {
           setTimeout(() => {
             getMediumFlowList().then(response => {
               this.timeEqu = response.data[response.data.length - 1].time
-              console.log(this.timeEqu)
+              // console.log(this.timeEqu)
               var param = {
                 limit: this.limit,
                 count: '1',
@@ -113,10 +118,10 @@ export default {
             // console.log(param)
             var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param[0].color + '"></span>'
             return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Rank: ' + param[0].axisValue + '</span>' + '<br>' +
-                   dotColor + '<span style="color: #20253B">' + 'srcIP: ' + '</span>' + ':' + (data.srcIP) + '<br>' +
-                   dotColor + '<span style="color: #20253B">' + 'srcPort: ' + '</span>' + ':' + (data.srcPort) + '<br>' +
-                   dotColor + '<span style="color: #20253B">' + 'dstIP: ' + '</span>' + ':' + (data.dstIP) + '<br>' +
-                   dotColor + '<span style="color: #20253B">' + 'dstPort: ' + '</span>' + ':' + (data.dstPort) + '<br>'
+                   dotColor + '<span style="color: #20253B">' + 'srcIP: ' + '</span>' + (data.srcIP) + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'srcPort: ' + '</span>' + (data.srcPort) + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'dstIP: ' + '</span>' + (data.dstIP) + '<br>' +
+                   dotColor + '<span style="color: #20253B">' + 'dstPort: ' + '</span>' + (data.dstPort) + '<br>'
           }
         },
         legend: {
@@ -258,6 +263,15 @@ export default {
     margin-bottom: 32px;
   }
 
+  .list-label {
+    background: #fff;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    color: #474747;
+    text-align: center;
+  }
 }
 
 @media (max-width:1024px) {

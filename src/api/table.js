@@ -18,15 +18,6 @@ export function getHighFlowList(params) {
   })
 }
 
-// 细粒度SNMP
-export function getSNMP(params) {
-  return request({
-    url: '/IBLT/compare/granular',
-    method: 'get',
-    params
-  })
-}
-
 // 高拥塞数据包总数
 export function getHighPackets(params) {
   return request({
@@ -45,10 +36,19 @@ export function getMediumPackets(params) {
   })
 }
 
-//BurstMonitor数据包总数
+// BurstMonitor数据包总数
 export function getbmPackets(params) {
   return request({
     url: '/IBLT/congest/bm_sum',
+    method: 'post',
+    data: params
+  })
+}
+
+// 实时性
+export function getDeltaTime(params) {
+  return request({
+    url: '/IBLT/congest/deltatime',
     method: 'post',
     data: params
   })

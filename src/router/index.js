@@ -174,17 +174,16 @@ export const constantRoutes = [
     meta: { title: '系统资源开销', icon: 'form' },
     children: [
       {
-        path: 'granular',
-        name: 'Granular',
-        hidden: true,
-        component: () => import('@/views/system/granular'),
-        meta: { title: '细粒度', icon: 'user' }
-      },
-      {
         path: 'light',
         name: 'Light',
         component: () => import('@/views/system/light'),
         meta: { title: '轻量级', icon: 'el-icon-s-marketing' }
+      },
+      {
+        path: 'time',
+        name: 'Time',
+        component: () => import('@/views/system/time'),
+        meta: { title: '实时性', icon: 'el-icon-lightning' }
       }
     ]
   },

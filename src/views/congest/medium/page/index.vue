@@ -16,8 +16,9 @@
     </el-row> -->
 
     <div>
-      <div class="table-lable">
-        <label>流信息统计</label>
+      <div class="list-label">
+        <i class="el-icon-view"></i>
+        中拥塞完整流信息统计
       </div>
       <div class="table-lable">
         <SrcipOption v-model="srcip"  @keyup.enter.native="handleSearch" />
@@ -408,6 +409,16 @@ export default {
   .table-wrapper {
     padding: 16px 32px 32px;
     background: #fff;
+  }
+
+  .list-label {
+    background: #fff;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #474747;
+    text-align: center;
+    margin-bottom: 32px;
   }
 }
 

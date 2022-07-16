@@ -1,5 +1,9 @@
 <template>
   <div class="dashboard-editor-container">
+    <div class="list-label">
+      <i class="el-icon-view"></i>
+      轻量级对比页面
+    </div>
     <el-row :gutter="32">
       <el-col :span="12">
         <div class="chart-wrapper">
@@ -15,12 +19,30 @@
     <el-row :gutter="32">
       <el-col :span="12">
         <div class="chart-wrapper">
-          <div id="pie_one" style="height: 400px; width: 100%;"></div>
+          <div id="pie" style="height: 400px; width: 100%;"></div>
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="chart-wrapper">
-          <div id="pie_two" style="height: 400px; width: 100%;"></div>
+        <div class="chart-wrapper" style="padding-bottom: 16px;">
+          <el-card style="card">
+            <div slot="header" class="card-header">
+              镜像数据包个数对比日志
+            </div>
+            <el-table
+              :data="packetNumLog"
+              :row-style="{height:'10px'}"
+              style="font-size: 16px;"
+              size="mini"
+              height="286"
+            >
+              <el-table-column align="center" label="time" prop="time">
+              </el-table-column>
+              <el-table-column align="center" label="INT/BurstRadar" prop="int">
+              </el-table-column>
+              <el-table-column align="center" label="BurstMonitor" prop="bm">
+              </el-table-column>
+            </el-table>
+          </el-card>
         </div>
       </el-col>
     </el-row>
@@ -46,11 +68,13 @@ export default {
       flowlist: [],
       brPacketNum: null,
       bmPacketNum: null,
-      timer: null
+      timer: null,
+      packetNumLog: [],
+      timeArray: []
     }
   },
   mounted() {
-    this.initPacketNumCharts()
+    this.initPacketNumChart()
     this.fetchData()
   },
   methods: {
@@ -69,100 +93,26 @@ export default {
               this.brPacketNum += response.data[0].items[0].sum_count
               getbmPackets().then(response => {
                 this.bmPacketNum = response.data[0].items[0].sum_count
-                this.initPacketNumCharts()
-                this.initBandwithCsmCharts()
-                this.initPieOneChart()
-                this.initPieTwoChart()
+                this.initPacketNumChart()
+                this.initBandwithCsmChart()
+                this.initPieChart()
+                var logEntry = {
+                  time: response.data[0].time,
+                  int: this.brPacketNum,
+                  bm: this.bmPacketNum
+                }
+                // 判断此时间戳的数据包个数对比信息是否已存在
+                if (this.timeArray.indexOf(logEntry.time) === -1) {
+                  this.timeArray.unshift(logEntry.time)
+                  this.packetNumLog.unshift(logEntry)
+                }
               })
             })
           })
         }, 0)
       }, 1000)
     },
-    initPieOneChart() {
-      var myChart = this.$echarts.init(document.getElementById('pie_one'))
-      var option = {
-        title: {
-          text: 'INT镜像数据包开销'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: (param) => {
-            var data = param.data
-            console.log(param)
-            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param.color + '"></span>'
-            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Consume' + '</span>' + '<br>' +
-                   dotColor + '<span style="color: #20253B;width:100px">' + data.name + '</span>' + ' ' + (data.value) + '<br>'
-          }
-        },
-        legend: {
-          orient: 'horizontal',
-          bottom: '10%'
-        },
-        grid: {
-          containLable: true
-        },
-        series: [
-          {
-            center: ['50%', '45%'],
-            name: 'consume',
-            type: 'pie',
-            radius: '50%',
-            itemStyle: {
-              color: '#5470c6'
-            },
-            data: [
-              { value: 100, name: 'INT' }
-            ],
-            animationDuration: 280,
-            animationEasing: 'quadraticOut'
-          }
-        ]
-      }
-      myChart.setOption(option)
-    },
-    initPieTwoChart() {
-      var myChart = this.$echarts.init(document.getElementById('pie_two'))
-      var consumee = this.bmPacketNum * 134 * 100 / (64 * this.brPacketNum)
-      var option = {
-        title: {
-          text: '镜像数据包开销占比'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: (param) => {
-            var data = param.data
-            console.log(param)
-            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param.color + '"></span>'
-            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Ratio' + '</span>' + '<br>' +
-                   dotColor + '<span style="color: #20253B;width:100px">' + data.name + '</span>' + ' ' + (data.value) + '%' + '<br>'
-          }
-        },
-        legend: {
-          orient: 'horizontal',
-          bottom: '10%'
-        },
-        series: [
-          {
-            center: ['50%', '45%'],
-            name: 'ratio',
-            type: 'pie',
-            radius: '50%',
-            label: {
-              formatter: '{b}:{c}%'
-            },
-            data: [
-              { value: 100 - parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
-              { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
-            ],
-            animationDuration: 280,
-            animationEasing: 'quadraticOut'
-          }
-        ]
-      }
-      myChart.setOption(option)
-    },
-    initPacketNumCharts() {
+    initPacketNumChart() {
       var myChart = this.$echarts.init(document.getElementById('packetNum'))
       var option = {
         title: {
@@ -230,7 +180,7 @@ export default {
       }
       myChart.setOption(option)
     },
-    initBandwithCsmCharts() {
+    initBandwithCsmChart() {
       var myChart = this.$echarts.init(document.getElementById('bandwithCsm'))
       var option = {
         title: {
@@ -297,11 +247,54 @@ export default {
         ]
       }
       myChart.setOption(option)
+    },
+    initPieChart() {
+      var myChart = this.$echarts.init(document.getElementById('pie'))
+      var consumee = this.bmPacketNum * 134 * 100 / (64 * this.brPacketNum)
+      var option = {
+        title: {
+          text: '镜像数据包开销占比'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: (param) => {
+            var data = param.data
+            console.log(param)
+            var dotColor = '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + param.color + '"></span>'
+            return '<span style="font-size:14px;font-weight: 600;color: #20253B">' + 'Ratio' + '</span>' + '<br>' +
+                   dotColor + '<span style="color: #20253B;width:100px">' + data.name + '</span>' + ' ' + (data.value) + '%' + '<br>'
+          }
+        },
+        legend: {
+          orient: 'horizontal',
+          bottom: '10%'
+        },
+        series: [
+          {
+            center: ['50%', '45%'],
+            name: 'ratio',
+            type: 'pie',
+            radius: '50%',
+            label: {
+              formatter: '{b}:{c}%'
+            },
+            data: [
+              { value: 100 - parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
+              { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
+            ],
+            animationDuration: 280,
+            animationEasing: 'quadraticOut'
+          }
+        ]
+      }
+      myChart.setOption(option)
     }
   },
   beforeDestroy() {
     clearInterval(this.timer)
     this.timer = null
+    this.packetNumLog = null
+    this.timeArray = null
   }
 }
 </script>
@@ -331,6 +324,22 @@ export default {
     background: #fff;
   }
 
+  .list-label {
+    background: #fff;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    color: #474747;
+    text-align: center;
+  }
+
+  .card-header {
+    background: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    color: #474747;
+  }
 }
 
 @media (max-width:1024px) {

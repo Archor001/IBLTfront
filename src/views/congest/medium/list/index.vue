@@ -80,6 +80,10 @@
         </div>
       </div>
     </div> -->
+  <div class="list-label">
+    <i class="el-icon-view"></i>
+    中拥塞流数据统计
+  </div>
   <el-row :gutter="12">
     <el-col :span="12" v-for="item in flowlist" :key="item.time" style="margin-top:20px">
       <el-card style="card" shadow="hover">
@@ -421,6 +425,15 @@ export default {
   .table-wrapper {
     padding: 32px;
     background: #fff;
+  }
+
+  .list-label {
+    background: #fff;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #474747;
+    text-align: center;
   }
 }
 
