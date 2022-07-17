@@ -38,7 +38,8 @@ export default {
   data() {
     return {
       grpcList: [],
-      mirrorList: []
+      mirrorList: [],
+      yaxis: 0
     }
   },
   mounted() {
@@ -169,12 +170,14 @@ export default {
         ]
       }
       myChart.setOption(option)
+      var rangeY = myChart.getModel().getComponent('yAxis').axis.scale._extent
+      this.yaxis = rangeY[1]
     },
     initMirrorChart() {
       var myChart = this.$echarts.init(document.getElementById('mirror'))
       var option = {
         title: {
-          text: 'IBLT传输时延统计'
+          text: '镜像传输时延统计'
         },
         grid: {
           top: '15%'
@@ -224,6 +227,7 @@ export default {
             fontWeight: 'bold',
             fontSize: 15
           },
+          max: this.yaxis,
           show: true,
           axisLine: {
             show: true,
@@ -268,6 +272,7 @@ export default {
     this.timer = null
     this.grpcList = null
     this.mirrorList = null
+    this.yaxis = 0
   }
 }
 </script>
