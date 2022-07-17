@@ -1,11 +1,14 @@
 <template>
   <div class="dashboard-container">
     <!-- <div class="dashboard-text">name: {{ name }}</div> -->
-    <div>网络拓扑图</div>
+    <div class="list-label">
+      <i class="el-icon-view"></i>
+      网络拓扑图
+    </div>
     <div>
       <!--width,height 画布的宽度，高度。 可以是百分比或像素，一般在dom元素上设置 -->
       <!-- <div id="network_id" class="network" style="height:80vh"></div> -->
-      <div><img src="../../static/1.png" style="height:700px"></div>
+      <div><img src="../../static/1.png" style="height:600px;margin-top:200px;margin-left:50px"></div>
       <!-- <el-dialog title="测试框" :visible.sync="dialogVisible" width="width">
         <div>xxxxxx</div>
         <div slot="footer">
@@ -310,4 +313,14 @@ export default {
     line-height: 46px;
   }
 }
+
+.list-label {
+    background: #fff;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    color: #474747;
+    text-align: center;
+  }
 </style>
