@@ -8,7 +8,7 @@
     <div>
       <!--width,height 画布的宽度，高度。 可以是百分比或像素，一般在dom元素上设置 -->
       <!-- <div id="network_id" class="network" style="height:80vh"></div> -->
-      <div><img src="../../static/1.png" style="height:600px;margin-top:200px;margin-left:50px"></div>
+      <div><img src="../../static/1.png" style="height:600px;margin-top:200px;"></div>
       <!-- <el-dialog title="测试框" :visible.sync="dialogVisible" width="width">
         <div>xxxxxx</div>
         <div slot="footer">
