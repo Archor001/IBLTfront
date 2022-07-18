@@ -205,7 +205,7 @@ export default {
           bottom: '3%'
         },
         xAxis: {
-          data: ['INT', 'BurstMonitor'],
+          data: ['INT/BurstRadar', 'BurstMonitor'],
           // boundaryGap: false
           axisTick: {
             show: false
