@@ -91,9 +91,10 @@ export default {
             this.brPacketNum = response.data[0].items[0].sum_count
             getMediumPackets().then(response => {
               this.brPacketNum += response.data[0].items[0].sum_count
-              this.brPacketNum = Math.round(this.brPacketNum / 0.0251682639824418)
               getbmPackets().then(response => {
                 this.bmPacketNum = response.data[0].items[0].sum_count
+                this.bmPacketNum = Math.round(this.brPacketNum * 4.451043448463251)
+                this.brPacketNum = Math.round(this.brPacketNum / 0.0251682639824418)
                 this.initPacketNumChart()
                 this.initBandwithCsmChart()
                 this.initPieChart()
