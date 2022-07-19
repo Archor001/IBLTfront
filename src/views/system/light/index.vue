@@ -91,6 +91,7 @@ export default {
             this.brPacketNum = response.data[0].items[0].sum_count
             getMediumPackets().then(response => {
               this.brPacketNum += response.data[0].items[0].sum_count
+              this.brPacketNum = Math.round(this.brPacketNum / 0.0251682639824418)
               getbmPackets().then(response => {
                 this.bmPacketNum = response.data[0].items[0].sum_count
                 this.initPacketNumChart()
@@ -240,7 +241,7 @@ export default {
             itemStyle: {
               color: '#5470c6'
             },
-            data: [100, (80 * this.bmPacketNum / 75 / this.brPacketNum)],
+            data: [100, (100 * 80 * this.bmPacketNum / 75 / this.brPacketNum).toFixed(2)],
             animationDuration: 280,
             animationEasing: 'quadraticOut'
           }
@@ -250,10 +251,10 @@ export default {
     },
     initPieChart() {
       var myChart = this.$echarts.init(document.getElementById('pie'))
-      var consumee = this.bmPacketNum * 134 * 100 / (64 * this.brPacketNum)
+      var consumee = this.bmPacketNum * 100 / this.brPacketNum
       var option = {
         title: {
-          text: '镜像数据包开销占比'
+          text: '镜像数据包个数占比'
         },
         tooltip: {
           trigger: 'item',
@@ -279,7 +280,7 @@ export default {
               formatter: '{b}:{c}%'
             },
             data: [
-              { value: 100 - parseFloat(consumee).toFixed(2), name: 'unused bandwith', itemStyle: { color: '#5470c6' }},
+              { value: 100 - parseFloat(consumee).toFixed(2), name: 'INT/BurstRadar', itemStyle: { color: '#5470c6' }},
               { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
             ],
             animationDuration: 280,
