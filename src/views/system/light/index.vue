@@ -39,7 +39,7 @@
               </el-table-column>
               <el-table-column align="center" label="INT/BurstRadar" prop="int">
               </el-table-column>
-              <el-table-column align="center" label="BurstMonitor" prop="bm">
+              <el-table-column align="center" label="IBLT" prop="bm">
               </el-table-column>
             </el-table>
           </el-card>
@@ -139,7 +139,7 @@ export default {
           bottom: '3%'
         },
         xAxis: {
-          data: ['INT/BurstRadar', 'BurstMonitor'],
+          data: ['INT/BurstRadar', 'IBLT'],
           // boundaryGap: false
           axisTick: {
             show: false
@@ -207,7 +207,7 @@ export default {
           bottom: '3%'
         },
         xAxis: {
-          data: ['INT/BurstRadar', 'BurstMonitor'],
+          data: ['INT/BurstRadar', 'IBLT'],
           // boundaryGap: false
           axisTick: {
             show: false
@@ -282,7 +282,7 @@ export default {
             },
             data: [
               { value: 100 - parseFloat(consumee).toFixed(2), name: 'INT/BurstRadar', itemStyle: { color: '#5470c6' }},
-              { value: parseFloat(consumee).toFixed(2), name: 'BurstMonitor', itemStyle: { color: '#ed7d31' }}
+              { value: parseFloat(consumee).toFixed(2), name: 'IBLT', itemStyle: { color: '#ed7d31' }}
             ],
             animationDuration: 280,
             animationEasing: 'quadraticOut'
