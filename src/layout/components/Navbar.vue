@@ -5,10 +5,10 @@
     <breadcrumb class="breadcrumb-container" />
 
     <!-- <span>aa</span> -->
-    <img src="../../assets/logo/hust_logo.png" class="hustlogo title"/>
+    <!-- <img src="../../assets/logo/hust_logo.png" class="hustlogo title"/>
     <span class="title">
       基于P4的轻量级微突发实时检测系统
-    </span>
+    </span> -->
 
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
